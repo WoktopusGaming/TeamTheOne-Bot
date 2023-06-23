@@ -1,0 +1,77 @@
+{
+	"Users": {
+		"798537646762754079": {
+			"Wallet": 750120,
+			"TTO": 25698,
+			"Username": "netherounet#3640",
+			"Last Daily": 1685923454,
+			"Inventory": {
+				"1": 0,
+				"2": 0
+			},
+			"Streaks": {
+				"Daily": 0
+			}
+		},
+		"988245387620012042": {
+			"Wallet": 188955,
+			"TTO": 55145,
+			"Username": "CYzUltimate#5451",
+			"Last Daily": 1685923226,
+			"Inventory": {
+				"1": 0,
+				"2": 0
+			},
+			"Streaks": {
+				"Daily": 0
+			}
+		},
+		"967426760532705311": {
+			"Wallet": 276946,
+			"TTO": 3520,
+			"Username": "STR1NGBEAN\u2014RBLX#1314",
+			"Last Daily": 1685922999,
+			"Inventory": {
+				"1": 0,
+				"2": 0
+			},
+			"Streaks": {
+				"Daily": 0
+			}
+		}
+	},
+	"Keys": {
+		"Keys": 0
+	},
+	"Shop": {
+		"Items": {
+			"1": {
+				"name": "Special Coin",
+				"description": "A special coin, found in most dungeons.",
+				"buyable": false,
+				"buyprice-multi": 0,
+				"buyprice-tto": 0,
+				"sellable": true,
+				"sellprice-multi": 80,
+				"sellprice-tto": 0,
+				"type": 1
+			},
+			"2": {
+				"name": "Potion of Goofiness",
+				"description": "A potion that makes you goofy. So common and goofy.",
+				"buyable": true,
+				"buyprice-multi": 175,
+				"buyprice-tto": 20,
+				"sellable": true,
+				"sellprice-multi": 85,
+				"sellprice-tto": 5,
+				"type": 2,
+				"interactions": {
+					"action": "status",
+					"statustype": "goofy",
+					"duration": 7200
+				}
+			}
+		}
+	}
+}
