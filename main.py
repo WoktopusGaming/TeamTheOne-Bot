@@ -237,10 +237,13 @@ async def kick(ctx, member: Member):
 #
 
 timer = 0
+f = open(".TOKEN", 'r')
+r = f.readlines
+f.close
 
 async def main():
     async with bot:
-        await bot.start("MTA0NzI3MDY2NzkwMjUyMTM0NA.GKfzCR.b_KThcbA_rtuLvCp1VejYQ8BS5VPCqNTkOEaMw")
+        await bot.start(r)
 
 while True:
     try:
