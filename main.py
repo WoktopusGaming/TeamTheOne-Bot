@@ -209,7 +209,7 @@ async def ban(ctx, member: Member, reason):
             )
             logger.warning(
                 f"Ban try from {ctx.author.name} affecting developers."
-            )  ##Instead of ctx.author.name recomending using ctx.message.author.id
+            )
             return 0
         else:
             await ctx.guild.ban(member)
@@ -244,7 +244,7 @@ f.close
 
 async def main():
     async with bot:
-        await bot.start(str(a))
+        await bot.start(a)
 
 while True:
     try:
@@ -255,8 +255,6 @@ while True:
 
         if loop and loop.is_running():
             tsk = loop.create_task(main())
-            # ^-- https://docs.python.org/3/library/asyncio-task.html#task-object
-            # Optionally, a callback function can be executed when the coroutine completes
             tsk.add_done_callback(lambda t: print(f'Task done with result={t.result()}  << return val of main()'))
         else:
             result = asyncio.run(main())
@@ -265,7 +263,6 @@ while True:
             logger.warning(
                 "The Discord servers denied the connection for making too many requests -/- Error 429"
             )
-            #print("Get help from https://stackoverflow.com/questions/66724687/in-discord-py-how-to-solve-the-error-for-toomanyrequests")
             os.system('restart.py')
             os.system('kill 1')
         if e.status == 404:
