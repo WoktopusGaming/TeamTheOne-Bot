@@ -238,7 +238,7 @@ async def kick(ctx, member: Member):
 
 timer = 0
 f = open(".TOKEN", 'r')
-r = f.readlines
+r = str(f.readlines)
 f.close
 
 async def main():
