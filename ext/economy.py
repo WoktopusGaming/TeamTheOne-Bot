@@ -407,7 +407,7 @@ async def daily(ctx, eph = True):
         await open_account(ctx.author)
         users = await get_users_data()
         
-        dt = datetime.datetime.now(timezone.utc) #UTC Datetime
+        dt = datetime.datetime.now(datetime.timezone.utc) #UTC Datetime
         ts = int(datetime.datetime.timestamp(dt)) #UTC Timestamp
         ts_seconds = ts % 86400
         ts_days = ts // 86400
