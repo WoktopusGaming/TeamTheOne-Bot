@@ -17,7 +17,7 @@ def check_socket(host, port):
     return 0
 
 #app definition
-app = Quart(__name__) #Flask('')
+app = Quart(__name__)
 
 
 def randport():

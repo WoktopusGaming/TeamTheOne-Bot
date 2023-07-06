@@ -14,7 +14,7 @@ from discord import Member
 from discord.ext import commands
 from discord.ext import tasks
 from discord import app_commands
-from pretty_help import AppMenu, PrettyHelp
+#from pretty_help import AppMenu, PrettyHelp
 
 dexer()
 
@@ -72,11 +72,7 @@ async def on_ready():
     await bot.change_presence(
         activity=discord.Activity(type=discord.ActivityType.listening,
                                   name="Commands | $help | Bot Now 24/7"))
-    try:
-        await bot.load_extension('ext.hello')
-    except ExtensionAlreadyLoaded:
-        pass
-    
+
     try:
         await bot.load_extension("ext.economy")
     except ExtensionAlreadyLoaded:
@@ -163,7 +159,6 @@ async def reload(ctx, ext):
     try:
         if ext == "all":
             await bot.reload_extension("economy")
-            await bot.reload_extension("hello")
             em = discord.Embed(color=0x008525)
             em.add_field(name="Reloaded all extensions",
                          value=f"We successfully reloaded all extensions!")
@@ -265,7 +260,7 @@ while True:
             )
             os.system('restart.py')
             os.system('kill 1')
-        if e.status == 404:
+        if e.status == 443:
             #
             if timer >= 86400:
                 logger.warning(f"WHOOPS! Seems you're offline! Checking again in 1 second. -- ERROR TIMER: {timer//86400} days, {timer%86400//3600} hours, {timer%3600//60} minutes, {timer%60} seconds.")
