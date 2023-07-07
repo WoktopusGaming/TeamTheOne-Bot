@@ -83,7 +83,7 @@ async def open_account(user):
 @discord.app_commands.describe(cpage = "Chooses the changelog page in the catalog. 0 shows all changelogs's other specifications.", eph = "Checks if you want it ephemeral or not. True by default.")
 @commands.hybrid_command(brief="Shows up the changelog")
 @commands.before_invoke(record)
-async def changelog(ctx, cpage: int, eph = True):
+async def changelog(ctx, cpage = 0, eph = True):
     number = 0
     with open('db/updatelog.json', 'r') as f:
         changelog = json.load(f)

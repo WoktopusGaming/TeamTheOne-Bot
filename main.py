@@ -71,7 +71,7 @@ async def on_ready():
     print("Bot is online and ready as", format("TeamTheOne Bot"))
     await bot.change_presence(
         activity=discord.Activity(type=discord.ActivityType.listening,
-                                  name="Commands | $help | Bot Now 24/7"))
+                                  name="myself"))
 
     try:
         await bot.load_extension("ext.economy")
