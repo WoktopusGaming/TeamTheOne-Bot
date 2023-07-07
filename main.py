@@ -71,11 +71,11 @@ async def on_ready():
     print("Bot is online and ready as", format("TeamTheOne Bot"))
     await bot.change_presence(
         activity=discord.Activity(type=discord.ActivityType.listening,
-                                  name="myself"))
+                                  name="your commands"))
 
     try:
         await bot.load_extension("ext.economy")
-    except ExtensionAlreadyLoaded:
+    except discord.ExtensionAlreadyLoaded:
         pass
         
     await bot.tree.sync(guild=discord.Object(id="947175286787690527"))
@@ -158,7 +158,7 @@ async def unload(ctx, ext):
 async def reload(ctx, ext):
     try:
         if ext == "all":
-            await bot.reload_extension("economy")
+            await bot.reload_extension("ext.economy")
             em = discord.Embed(color=0x008525)
             em.add_field(name="Reloaded all extensions",
                          value=f"We successfully reloaded all extensions!")

@@ -81,7 +81,7 @@
 			"Number": 10
 		},
 		"11": {
-			"Detailed Changelog": "STALE CHANGELOG",
+			"Detailed Changelog": "- </changelog:1097887315948470382>'s cpage is no longer necessary and will default to zero\n- </gamble:1084153211029565520> is no longer available\n- Added keys to user database\n- Fixed problem where the database registers \"#0\" because of new names\n- Fixed problem where the bot would return ExtensionAlreadyLoaded is unexistant\n- Fixed problem where daily shown time elapsed between last daily and now instead of time remaining\n- </redeem:1126970259878981794> is now finished, codes are available\n- Codes are redeemable once only per user\n- Codes can now be either redeemed by one person (first redeemed first served) or by anyone until removal",
 			"Detailed Version": "v2023.07.07 build 1",
 			"Compact Version": "v2023.07.07-1",
 			"Version Name": "Commands Revamp Update",

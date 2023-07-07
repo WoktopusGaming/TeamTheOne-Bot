@@ -38,10 +38,10 @@ async def open_account(user):
 
     if str(user.id) in users["Users"]:
         try:
-            if users["Users"][f"{user.id}"]["Username"] != (user.name + "#" + str(user.discriminator)):
-                users["Users"][f"{user.id}"]["Username"] = user.name + "#" + str(user.discriminator)
+            if users["Users"][f"{user.id}"]["Username"] != user.name:
+                users["Users"][f"{user.id}"]["Username"] = user.name
         except KeyError:
-            users["Users"][f"{user.id}"]["Username"] = user.name + "#" + str(user.discriminator)
+            users["Users"][f"{user.id}"]["Username"] = user.name
             
         try:
             if users["Users"][f"{user.id}"]["Last Daily"] != 0:
@@ -61,18 +61,40 @@ async def open_account(user):
                 if users["Users"][f"{user.id}"]["Inventory"][f"{i}"] == 0:
                     users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
             except KeyError:
-                users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+                try:
+                    users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+                except KeyError:
+                    users["Users"][f"{user.id}"]["Inventory"] = {}
+                    for i in users["Shop"]["Items"]:
+                        users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+                
+        for i in users["Keys"]:
+            try:
+                if users["Users"][f"{user.id}"]["Keys"][f"{i}"] != False:
+                    pass
+            except KeyError:
+                try:
+                    users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
+                except:
+                    users["Users"][f"{user.id}"]["Keys"] = {}
+                    for i in users["Keys"]:
+                        users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
     else:
         users["Users"][f"{user.id}"] = {}
         users["Users"][f"{user.id}"]["Wallet"] = 0
         users["Users"][f"{user.id}"]["TTO"] = 0
-        users["Users"][f"{user.id}"]["Username"] = user.name + "#" + str(user.discriminator)
+        users["Users"][f"{user.id}"]["Username"] = user.name
         users["Users"][f"{user.id}"]["Last Daily"] = 0
         users["Users"][f"{user.id}"]["Streaks"] = {}
         users["Users"][f"{user.id}"]["Streaks"]["Daily"] = 1
+        
         users["Users"][f"{user.id}"]["Inventory"] = {}
         for i in users["Shop"]["Items"]:
             users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+        
+        users["Users"][f"{user.id}"]["Keys"] = {}
+        for i in users["Keys"]:
+            users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
 
     with open("db/users.json", 'w') as f:
         json.dump(users, f, indent='\t')
@@ -301,65 +323,11 @@ async def beg(ctx):
     await ctx.send(f"Someone gave you {earnings} coins! You added them to your multiserver wallet.")
       
 
-
-
-gengui = [947175286787690527]
-ascup = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-
-@commands.hybrid_command(brief="Generates up to 5 codes giving the same reward.", with_app_command = True)
-@discord.app_commands.describe(amount = "How many codes to generate", hidemsg = "Hides message from others (send ephemeral)", strnum="Determines how many characters the code(s) must contain", keytype="Determines the reward of reedeming this code", value="Depending on choosen type, defines the value behind the code.")
-@commands.guild_only()
-@commands.is_owner()
-@commands.before_invoke(record)
-#"Multiserver Coins" is choice 1
-#"TTO Coins" is choice 2
-async def gen(ctx, amount = 1, hidemsg = True, strnum = 8, keytype = 1, value = 0):
-  try: 
-    if amount >= 6:
-      await ctx.send("I cannot generate over 5 codes at once.")
-      return
-    if amount <= 0:
-      await ctx.send("I cannot generate a negative amount of codes.")
-      return
-    if strnum < 4 or strnum > 20:
-      await ctx.send("I cannot generate under 4 or above 20 characters per code.")
-      return
-    key_amt = range(amount)
-    num = strnum
-    keys = await get_users_data()
-    normal = "Keys:"
-    for x in key_amt:
-        key = "".join(random.choices(ascup + digits, k=num))
-        keys["Keys"]["Keys"] += 1
-        keys["Keys"][key] = {}
-        keys["Keys"][key]["Available"] = True
-        keys["Keys"][key]["Type"] = keytype
-        if keytype == 1:
-            if value == 0 or value >= 1000:
-              keys["Keys"][key]["Amount"] = random.randrange(30, 1000)
-            else:
-              keys["Keys"][key]["Amount"] = value
-            keys["Keys"][key]["Wallet"] = "Wallet"
-        elif keytype == 2:
-            if value == 0 or value >= 400:
-              keys["Keys"][key]["Amount"] = random.randrange(10, 400)
-            else:
-              keys["Keys"][key]["Amount"] = value
-            keys["Keys"][key]["Wallet"] = "TTO"
-        normal += f'\n- \"{key}\"'
-    await ctx.send(normal, ephemeral=hidemsg)
-    with open("db/users.json", 'w') as f:
-        json.dump(keys, f, indent="\t")
-  except Exception as e:
-    await ctx.send('While generating codes, I might have lost the keys...')
-    await logging.error(traceback.format_exc())
-
-
 @commands.hybrid_command()
 @commands.guild_only()
 @commands.before_invoke(record)
 async def rob(ctx, member:Member):
+  await open_account(ctx.author)
   users = await get_users_data()
   if users["Users"][str(ctx.author.id)]["Wallet"] <= 150:
     await ctx.send("You cannot rob because you're too poor, and everyone wants to run away from you.")
@@ -378,8 +346,8 @@ async def rob(ctx, member:Member):
       return 0
   else:
     coinless = random.randrange(151)
-    users["Users"][int(ctx.author.id)]["Wallet"] += coinless
-    users["Users"][int(member.id)]["Wallet"] -= coinless
+    users["Users"][str(ctx.author.id)]["Wallet"] += coinless
+    users["Users"][str(member.id)]["Wallet"] -= coinless
     users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name + "#" + str(ctx.author.discriminator)
     users["Users"][str(member.id)]["Username"] = member.name + "#" + str(member.discriminator)
     with open("db/users.json", "w") as f:
@@ -387,17 +355,158 @@ async def rob(ctx, member:Member):
     await ctx.send(f"You successfully robbed {member.display_name} and won {coinless}.")
 
 
-@discord.app_commands.describe(key = "The key to redeem (UUID-4 format)", eph = "Checks if you want it ephemeral or not. True by default.")
-@commands.hybrid_command(brief="For code redeem", help="Redeems code, used normally for economy system.")
+ascup = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+
+@commands.hybrid_command(brief="Generates up to 5 codes giving the same reward.", with_app_command = True)
+@discord.app_commands.describe(amount = "How many codes to generate", hidemsg = "Hides message from others (send ephemeral)", strnum="Determines how many characters the code(s) must contain", keytype="Determines the reward of reedeming this code", value="Depending on choosen type, defines the value behind the code.", availabletype="Determines the availability of the code")
+@commands.guild_only()
+@commands.is_owner()
+@commands.before_invoke(record)
+# "Multiserver Coins" is keytype 1
+# "TTO Coins" is keytype 2
+# 
+# "One-time reach (first redeemed first gotten)" is availabletype 1
+# "Forever reaches" is availabletype 2
+async def gen(ctx, amount = 1, hidemsg = True, strnum = 8, keytype = 1, value = 0, availabletype = 2):
+    try: 
+        if amount >= 6:
+            await ctx.send("I cannot generate over 5 codes at once.")
+            return
+        if amount <= 0:
+            await ctx.send("I cannot generate a negative amount of codes.")
+            return
+        if strnum < 4 or strnum > 20:
+            await ctx.send("I cannot generate under 4 or above 20 characters per code.")
+            return
+        key_amt = range(amount)
+        num = strnum
+        keys = await get_users_data()
+        normal = "Keys:"
+        for x in key_amt:
+            key = "".join(random.choices(ascup + digits, k=num))
+            keys["KeysNum"] += 1
+            keys["Keys"][key] = {}
+            keys["Keys"][key]["Available"] = True
+            keys["Keys"][key]["Availability"] = availabletype
+            if keytype == 1:
+                if value == 0 or value >= 10001:
+                    keys["Keys"][key]["Amount"] = random.randrange(10, 10000)
+                else:
+                    keys["Keys"][key]["Amount"] = value
+                keys["Keys"][key]["Wallet"] = "Wallet"
+            elif keytype == 2:
+                if value == 0 or value >= 401:
+                    keys["Keys"][key]["Amount"] = random.randrange(10, 400)
+                else:
+                    keys["Keys"][key]["Amount"] = value
+                keys["Keys"][key]["Wallet"] = "TTO"
+            normal += f'\n- \"{key}\"'
+        await ctx.send(normal, ephemeral=hidemsg)
+        with open("db/users.json", 'w') as f:
+            json.dump(keys, f, indent="\t")
+    except Exception as e:
+        await ctx.send('While generating codes, I might have lost the keys...')
+        await logging.error(traceback.format_exc())
+
+
+
+@discord.app_commands.describe(key = "The key to redeem", eph = "Checks if you want it ephemeral or not")
+@commands.hybrid_command(brief="Redeem your codes you found out using this command")
 @commands.guild_only()
 @commands.before_invoke(record)
 async def redeem(ctx, key, eph = True):
-    try:  
-        await open_account(ctx.author.id)
-        await get_users_data()
+    await open_account(ctx.author)
+    keys = await get_users_data()
+    
+    try:
+        try:
+            keycheck = keys["Keys"][key]
+        except Exception as e:
+            em = discord.Embed(color=0xEB2113) #red color
+            em.add_field(
+                name="Invalid Key Typed",
+                value=
+                f"Your key typed is invalid. It might be your spelling or that the key is removed.\nAll letters are CAPS LOCKED if any, to help you. (Error TTO-313)"
+            )
+            await ctx.send(embed=em, ephemeral=eph)
+            return
+        
+        if keys["Keys"][key]["Available"] == False:
+            em = discord.Embed(color=0xEB2113) #red color
+            if keys["Keys"][key]["Availability"] == 1:
+                em.add_field(
+                    name="Unavailable Key",
+                    value=
+                    f"The key you typed is unavailable. It might have been redeemed by someone else. Contact the developers for any issues. (Error TTO-314-1)"
+                )
+            else:
+                em.add_field(
+                    name="Unavailable Key",
+                    value=
+                    f"The key you typed is unavailable. It might have been removed. Contact the developers for any issues. (Error TTO-314-2)"
+                )
+            await ctx.send(embed=em, ephemeral=eph)
+            return
+            
+        if keys["Users"][str(ctx.author.id)]["Keys"][key] == True:
+            em.add_field(
+                name="Key Already Redeemed",
+                value=
+                f"You have already redeemed this key. (Error TTO-315)"
+            )
+            await ctx.send(embed=em, ephemeral=eph)
+            return
+            
+        if keys["Keys"][key]["Available"] == True:
+            if keys["Keys"][key]["Availability"] == 1:
+                keys["Keys"][key]["Available"] = False
+            
+            if keys["Keys"][key]["Wallet"] == "Wallet":
+                value = keys["Keys"][key]["Amount"]
+                keys["Users"][str(ctx.author.id)]["Wallet"] += value
+                em = discord.Embed(color=0x00FF90)
+                if keys["Keys"][key]["Availability"] == 1:
+                    em.add_field(
+                        name="Key Redeemed!",
+                        value=
+                        f"YAYYY! You got a key! It's incredible. You got it faster than anyone else. WOWWW! You recieved {value} coins in your wallet. Enjoy!"
+                    )
+                else:
+                    em.add_field(
+                        name="Key Redeemed!",
+                        value=
+                        f"YAYYY! You got a key! It's incredible. You recieved {value} coins in your wallet. Enjoy!"
+                    )
+                await ctx.send(embed=em, ephemeral=eph)
+                keys["Users"][str(ctx.author.id)]["Keys"][key] = True
+                
+            elif keys["Keys"][key]["Wallet"] == "TTO":
+                value = keys["Keys"][key]["Amount"]
+                keys["Users"][str(ctx.author.id)]["TTO"] += value
+                em = discord.Embed(color=0x00FF90)
+                if keys["Keys"][key]["Availability"] == 1:
+                    em.add_field(
+                        name="Key Redeemed!",
+                        value=
+                        f"YAYYY! You got a key! It's incredible. You got it faster than anyone else. WOWWW! You recieved {value} coins in your TeamTheOne Wallet. Enjoy!"
+                    )
+                else:
+                    em.add_field(
+                        name="Key Redeemed!",
+                        value=
+                        f"YAYYY! You got a key! It's incredible. You recieved {value} coins in your TeamTheOne Wallet. Enjoy!"
+                    )
+                await ctx.send(embed=em, ephemeral=eph)
+                keys["Users"][str(ctx.author.id)]["Keys"][key] = True
+                
+            with open("db/users.json", "w") as f:
+                json.dump(keys, f, indent="\t")
     except Exception as e:
-        await ctx.send('I\'m overprocessing, sorry. Try again.', ephemeral=eph)
+        await ctx.send('While searching codes, I might have lost the keys to access the code database...')
         await logging.error(traceback.format_exc())
+  
+
 
 @discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
 @commands.hybrid_command()
@@ -471,7 +580,7 @@ async def daily(ctx, eph = True):
                 await ctx.send(f"You've got {daily} coins! Come back at midnight GMT (UTC) to claim again!\nStreak Count: {streak+1} days (**{streakdailycount}**x bonus\*)\n\n\*Boost was applied before messaging", ephemeral=eph)
             users["Users"][str(ctx.author.id)]["Wallet"] += daily
         else:
-            thinkity = ts - users['Users'][str(ctx.author.id)]['Last Daily']
+            thinkity = 86400 - ts_seconds
             if thinkity <= 59:
                 await ctx.send(f"You'll have to wait {thinkity} seconds before being able to collect again your daily bonus. It ain't long!", ephemeral=eph)
             elif thinkity <= 3599:
@@ -499,12 +608,12 @@ async def shop(ctx, eph = True):
 
 async def setup(bot):
   bot.add_command(gen)
-  #bot.add_command(redeem)
+  bot.add_command(redeem)
   bot.add_command(changelog)
   bot.add_command(beg)
   bot.add_command(wallet)
   bot.add_command(rob)
   bot.add_command(give)
-  bot.add_command(gamble)
+  #bot.add_command(gamble)
   bot.add_command(shop)
   bot.add_command(daily)
