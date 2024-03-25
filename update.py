@@ -55,7 +55,7 @@ def check_for_updates():
         with open("db/updatelog.json") as d:
             changelog = json.load(d)
 
-        if users["stable-latest-number"] == changelog["stable-latest-number"] and users["stable-latest-number"] == changelog["stable-latest-number"]:
+        if users["stable-latest-number"] == changelog["stable-latest-number"] and users["stable-latest-version-num"] == changelog["stable-latest-version-num"] and users["stable-latest-version-com"] == changelog["stable-latest-version-com"]:
             os.remove("db/temp.updatelog.json")
             return False
         else:
