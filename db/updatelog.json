@@ -1,24 +1,25 @@
 {
+	"latest-num": 6,
+	"stable-latest-number": 11,
+	"stable-latest-version-num": "v2.1.0",
+	"stable-latest-version-com": "v2023.07.07",
 	"Changelogs": {
-		"1":{
+		"1": {
 			"Detailed Changelog": "- New command /clocktimer (timer)\n- Improvement of the bot (made extensions for easy reloading)",
-			"Detailed Version": "v2023.01.22 build 1",
 			"Compact Version": "v2023.01.22-1",
 			"Version Name": "Extensions Update",
 			"Second Version Number": "v1.0.0",
 			"Number": 1
 		},
-		"2":{
+		"2": {
 			"Detailed Changelog": "- New command /rob (rob your opponents)\n- Improvement of the /reload command (reload easily the extensions)",
-			"Detailed Version": "v2023.01.22 build 2",
 			"Compact Version": "v2023.01.22-2",
 			"Version Name": "Robbery Update",
 			"Second Version Number": "v1.0.1",
 			"Number": 2
 		},
-		"3":{
+		"3": {
 			"Detailed Changelog": "- Command /clocktimer expanded to 7 days (604799 seconds)\n- Economy /rob command bug fixed (not able to rob)",
-			"Detailed Version": "v2023.01.22 build 3",
 			"Compact Version": "v2023.01.22-3",
 			"Version Name": "Mini Fixing Update",
 			"Second Version Number": "v1.0.2",
@@ -26,15 +27,13 @@
 		},
 		"4": {
 			"Detailed Changelog": "- Command /rob fixed and now robs\n- /clocktimer got fixed for inputing 7d (604800s)",
-			"Detailed Version": "v2023.01.25 build 1",
 			"Compact Version": "v2023.01.25-1",
 			"Version Name": "Mini Fixing Update",
 			"Second Version Number": "v1.0.3",
 			"Number": 4
-        },
-		"5":{
+		},
+		"5": {
 			"Detailed Changelog": "- Message was added for error Missing Permissions To Run Command (mostly in DMs using ADMIN commands)",
-			"Detailed Version": "v2023.01.25 build 2",
 			"Compact Version": "v2023.01.25-2",
 			"Version Name": "Message Log",
 			"Second Version Number": "v1.0.4",
@@ -42,15 +41,13 @@
 		},
 		"6": {
 			"Detailed Changelog": "- Bot records any error happening and makes a report\n- Bot works now up to 20 mins AFK without any input",
-			"Detailed Version": "v2023.02.27 build 1",
-			"Compact Version": "v2023.02.27-1",
+			"Compact Version": "v2023.02.27",
 			"Version Name": "Bot Capacity Update",
 			"Second Version Number": "v1.1.0",
 			"Number": 6
 		},
 		"7": {
 			"Detailed Changelog": "- /give command is finally here (give money freely to someone)",
-			"Detailed Version": "v2023.02.28 build 1",
 			"Compact Version": "v2023.02.28-1",
 			"Version Name": "Giving Update",
 			"Second Version Number": "v1.1.1",
@@ -58,7 +55,6 @@
 		},
 		"8": {
 			"Detailed Changelog": "- Made help command a hybrid command and embedded the help page",
-			"Detailed Version": "v2023.02.28 build 2",
 			"Compact Version": "v2023.02.28-2",
 			"Version Name": "Slashing Help Update",
 			"Second Version Number": "v1.1.2",
@@ -66,27 +62,31 @@
 		},
 		"9": {
 			"Detailed Changelog": "- </gamble:1084153211029565520> command is here",
-			"Detailed Version": "v2023.03.12 build 1",
-			"Compact Version": "v2023.03.12-1",
+			"Compact Version": "v2023.03.12",
 			"Version Name": "Gamble Update",
 			"Second Version Number": "v1.1.3",
 			"Number": 9
 		},
 		"10": {
 			"Detailed Changelog": "- </changelog:1097887315948470382> now lists all changelogs registered\n- </gamble:1084153211029565520> is now available for a limited time\n- </shop view:1096607299746926704> is available, but not open yet\n- </clocktimer:0> is no more available\n- Inventory is available for everyone, as a revamp of the whole database\n- Commands no longer throw at you an error saying you didn't register to the database\n- The database no more resets your inventory and your bank\n- You can now register for Partner System Tier 1 for free",
-			"Detailed Version": "v2023.05.16 build 1",
-			"Compact Version": "v2023.05.16-1",
+			"Compact Version": "v2023.05.16",
 			"Version Name": "Bot Revamp Update",
 			"Second Version Number": "v2.0.0",
 			"Number": 10
 		},
 		"11": {
 			"Detailed Changelog": "- </changelog:1097887315948470382>'s cpage is no longer necessary and will default to zero\n- </gamble:1084153211029565520> is no longer available\n- Added keys to user database\n- Fixed problem where the database registers \"#0\" because of new names\n- Fixed problem where the bot would return ExtensionAlreadyLoaded is unexistant\n- Fixed problem where daily shown time elapsed between last daily and now instead of time remaining\n- </redeem:1126970259878981794> is now finished, codes are available\n- Codes are redeemable once only per user\n- Codes can now be either redeemed by one person (first redeemed first served) or by anyone until removal",
-			"Detailed Version": "v2023.07.07 build 1",
-			"Compact Version": "v2023.07.07-1",
+			"Compact Version": "v2023.07.07",
 			"Version Name": "Commands Revamp Update",
 			"Second Version Number": "v2.1.0",
 			"Number": 11
+		},
+		"12": {
+			"Detailed Changelog": "Hello! This update is a beta update! If you see this, immediately install a stable release package or ask the owner to do so!",
+			"Compact Version": "v2024.03.??",
+			"Version Name": "BETA UPDATE",
+			"Second Version Number": "v2.2.0",
+			"Number": 12
 		}
 	}
 }

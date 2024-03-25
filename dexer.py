@@ -3,6 +3,7 @@ from flask import render_template, Flask as Quart, send_from_directory
 #from quart import render_template, Quart, send_from_directory
 from threading import Thread
 from random import randrange
+import traceback
 import socket
 from contextlib import closing
    
@@ -13,7 +14,9 @@ def check_socket(host, port):
             return 2
         else:
             return 1
-  except Exception:
+  except Exception as e:
+    print("Socket couldn't be checked. (Error TTO-009)")
+    traceback.format_exc(e)
     return 0
 
 #app definition

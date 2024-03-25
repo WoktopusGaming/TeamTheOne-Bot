@@ -24,9 +24,11 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Device**
- - OS: [e.g. iOS]
- - Browser: [e.g. chrome, safari]
- - Version: [e.g. 22]
+ - OS: [e.g. iOS, Windows]
+ - Browser (if used): [e.g. chrome, safari]
+ - Version: [browser version, e.g. 100.8.6]
+ - Discord Version Date (if app): [e.g. March 5th, 2024, 24.3.5]
+ - TeamTheOne Bot Version: [latest version patch in /changelog command or version shown in status, e.g. v2.1.0]
 
 **Additional context**
 Add any other context about the problem here.

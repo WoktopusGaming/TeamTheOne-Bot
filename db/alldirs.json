@@ -1,0 +1,102 @@
+{
+  "temp": {
+    "database-directories": [
+      "temp.updatelog.json",
+      "temp.alldirs.json"
+    ],
+    "html-files": [
+      "templates/temp.index.html"
+    ],
+    "css-static": [
+      "static/css/temp.bootstrap.min.css"
+    ],
+    "js-static": [
+      "static/js/temp.bootstrap.min.js"
+    ],
+    "webhost-files": [
+      "temp.dexer.py"
+    ],
+    "extensions": [
+      "ext/temp.economy.py"
+    ],
+    "git-templates": [
+      ".github/ISSUE_TEMPLATE/temp.bug_report.md",
+      ".github/ISSUE_TEMPLATE/temp.documentation-template.md",
+      ".github/ISSUE_TEMPLATE/temp.feature_request.md"
+    ],
+    "gitrepo-files": [
+      "temp.LICENSE",
+      "temp.gitattributes",
+      "temp.gitignore"
+    ],
+    "appfiles": [
+      "temp.main.py"
+    ]
+  },
+  "normal": {
+    "database-directories": [
+      "updatelog.json",
+      "alldirs.json"
+    ],
+    "html-files": [
+      "templates/index.html"
+    ],
+    "css-static": [
+      "static/css/bootstrap.min.css"
+    ],
+    "js-static": [
+      "static/js/bootstrap.min.js"
+    ],
+    "webhost-files": [
+      "dexer.py"
+    ],
+    "extensions": [
+      "ext/economy.py"
+    ],
+    "git-templates": [
+      ".github/ISSUE_TEMPLATE/bug_report.md",
+      ".github/ISSUE_TEMPLATE/documentation-template.md",
+      ".github/ISSUE_TEMPLATE/feature_request.md"
+    ],
+    "gitrepo-files": [
+      "LICENSE",
+      ".gitattributes",
+      ".gitignore"
+    ],
+    "appfiles": [
+      "main.py"
+    ]
+  },
+  "temp-allinone": [
+    "temp.updatelog.json",
+    "temp.alldirs.json",
+    "templates/temp.index.html",
+    "static/css/temp.bootstrap.min.css",
+    "static/js/temp.bootstrap.min.js",
+    "temp.dexer.py",
+    "ext/temp.economy.py",
+    ".github/ISSUE_TEMPLATE/temp.bug_report.md",
+    ".github/ISSUE_TEMPLATE/temp.documentation-template.md",
+    ".github/ISSUE_TEMPLATE/temp.feature_request.md",
+    "temp.LICENSE",
+    "temp.gitattributes",
+    "temp.gitignore",
+    "temp.main.py"
+  ],
+  "normal-allinone": [
+    "updatelog.json",
+    "alldirs.json",
+    "templates/index.html",
+    "static/css/bootstrap.min.css",
+    "static/js/bootstrap.min.js",
+    "dexer.py",
+    "ext/economy.py",
+    ".github/ISSUE_TEMPLATE/bug_report.md",
+    ".github/ISSUE_TEMPLATE/documentation-template.md",
+    ".github/ISSUE_TEMPLATE/feature_request.md",
+    "LICENSE",
+    ".gitattributes",
+    ".gitignore",
+    "main.py"
+  ]
+}

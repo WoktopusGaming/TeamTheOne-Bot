@@ -32,57 +32,110 @@ async def get_users_data():
         users = json.load(f)
     return users
 
-
-async def open_account(user):
-    users = await get_users_data()
-
-    if str(user.id) in users["Users"]:
-        try:
-            if users["Users"][f"{user.id}"]["Username"] != user.name:
-                users["Users"][f"{user.id}"]["Username"] = user.name
-        except KeyError:
+async def update_account(user, users):
+    try:
+        if users["Users"][f"{user.id}"]["Wallet"] != 0:
+            pass
+    except KeyError:
+        users["Users"][f"{user.id}"]["Wallet"] = 0
+            
+    try:
+        if users["Users"][f"{user.id}"]["Username"] != user.name:
             users["Users"][f"{user.id}"]["Username"] = user.name
+    except KeyError:
+        users["Users"][f"{user.id}"]["Username"] = user.name
+            
+    try:
+        if users["Users"][f"{user.id}"]["Last Daily"] != 0:
+            pass
+    except KeyError:
+        users["Users"][f"{user.id}"]["Last Daily"] = 0
+        
+    try:
+        if users["Users"][f"{user.id}"]["Streaks"]["Daily"] != 0:
+            pass
+    except KeyError:
+        users["Users"][f"{user.id}"]["Streaks"] = {}
+        users["Users"][f"{user.id}"]["Streaks"]["Daily"] = 0
+        
+    for i in users["Shop"]["Items"]:
+        try:
+            if users["Users"][f"{user.id}"]["Inventory"][f"{i}"] == 0:
+                users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+        except KeyError:
+            try:
+                users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+            except KeyError:
+                users["Users"][f"{user.id}"]["Inventory"] = {}
+                users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+                
+    for i in users["Keys"]:
+        try:
+            if users["Users"][f"{user.id}"]["Keys"][f"{i}"] != False:
+                pass
+        except KeyError:
+            try:
+                users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
+            except:
+                users["Users"][f"{user.id}"]["Keys"] = {}
+                users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
+    
+    return users
+    
+async def update_database(users):
+    for i in users["Users"]:
+        try:
+            if users["Users"][f"{i}"]["Wallet"] != 0:
+                pass
+        except KeyError:
+            users["Users"][f"{i}"]["Wallet"] = 0
+    
+        try:
+            if users["Users"][f"{i}"]["Last Daily"] != 0:
+                pass
+        except KeyError:
+            users["Users"][f"{i}"]["Last Daily"] = 0
             
         try:
-            if users["Users"][f"{user.id}"]["Last Daily"] != 0:
+            if users["Users"][f"{i}"]["Streaks"]["Daily"] != 0:
                 pass
         except KeyError:
-            users["Users"][f"{user.id}"]["Last Daily"] = 0
+            users["Users"][f"{i}"]["Streaks"] = {}
+            users["Users"][f"{i}"]["Streaks"]["Daily"] = 0
         
-        try:
-            if users["Users"][f"{user.id}"]["Streaks"]["Daily"] != 0:
-                pass
-        except KeyError:
-            users["Users"][f"{user.id}"]["Streaks"] = {}
-            users["Users"][f"{user.id}"]["Streaks"]["Daily"] = 0
-        
-        for i in users["Shop"]["Items"]:
+        for n in users["Shop"]["Items"]:
             try:
-                if users["Users"][f"{user.id}"]["Inventory"][f"{i}"] == 0:
-                    users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+                if users["Users"][f"{i}"]["Inventory"][f"{n}"] == 0:
+                    users["Users"][f"{i}"]["Inventory"][f"{n}"] = 0
             except KeyError:
                 try:
-                    users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+                    users["Users"][f"{i}"]["Inventory"][f"{n}"] = 0
                 except KeyError:
-                    users["Users"][f"{user.id}"]["Inventory"] = {}
-                    for i in users["Shop"]["Items"]:
-                        users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
+                    users["Users"][f"{i}"]["Inventory"] = {}
+                    users["Users"][f"{i}"]["Inventory"][f"{n}"] = 0
                 
-        for i in users["Keys"]:
+        for n in users["Keys"]:
             try:
-                if users["Users"][f"{user.id}"]["Keys"][f"{i}"] != False:
+                if users["Users"][f"{i}"]["Keys"][f"{n}"] != False:
                     pass
             except KeyError:
                 try:
-                    users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
+                    users["Users"][f"{i}"]["Keys"][f"{n}"] = False
                 except:
-                    users["Users"][f"{user.id}"]["Keys"] = {}
-                    for i in users["Keys"]:
-                        users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
+                    users["Users"][f"{i}"]["Keys"] = {}
+                    users["Users"][f"{i}"]["Keys"][f"{n}"] = False
+        
+    return users
+
+async def open_account(user):
+    users = await get_users_data()
+    
+    if str(user.id) in users["Users"]:
+        users = await update_account(user, users)
+        users = await update_database(users)
     else:
         users["Users"][f"{user.id}"] = {}
         users["Users"][f"{user.id}"]["Wallet"] = 0
-        users["Users"][f"{user.id}"]["TTO"] = 0
         users["Users"][f"{user.id}"]["Username"] = user.name
         users["Users"][f"{user.id}"]["Last Daily"] = 0
         users["Users"][f"{user.id}"]["Streaks"] = {}
@@ -116,7 +169,7 @@ async def changelog(ctx, cpage = 0, eph = True):
     try:
         em = discord.Embed(color=0x00FF90)
         em.add_field(name="Changelog", value=changelog['Changelogs'][str(cpage)]['Detailed Changelog'])
-        em.add_field(name="Versions", value=f"- {changelog['Changelogs'][str(cpage)]['Compact Version']}\n- {changelog['Changelogs'][str(cpage)]['Detailed Version']}\n- {changelog['Changelogs'][str(cpage)]['Second Version Number']}")
+        em.add_field(name="Versions", value=f"- {changelog['Changelogs'][str(cpage)]['Compact Version']}\n- {changelog['Changelogs'][str(cpage)]['Second Version Number']}")
         em.add_field(name="Version Name and Number", value=f'- {changelog["Changelogs"][str(cpage)]["Version Name"]}\n- Changelog N°{changelog["Changelogs"][str(cpage)]["Number"]}')
         await ctx.send(embed=em, ephemeral=eph)
     except KeyError:
@@ -127,21 +180,24 @@ async def changelog(ctx, cpage = 0, eph = True):
             em = discord.Embed(color=0x00FF90)
 
             for i in changelog["Changelogs"]:
-                versions += f"- {changelog['Changelogs'][str(i)]['Compact Version']} / {changelog['Changelogs'][str(i)]['Second Version Number']}\n"
-                versionnames += f'- {changelog["Changelogs"][str(i)]["Version Name"]}\n'
-                changelognumbers += f"- Changelog N°**{changelog['Changelogs'][str(i)]['Number']}**\n"
+                if int(i) <= changelog["latest-num"]:
+                    pass
+                else:
+                    versions += f"- {changelog['Changelogs'][str(i)]['Compact Version']} / {changelog['Changelogs'][str(i)]['Second Version Number']}\n"
+                    versionnames += f'- {changelog["Changelogs"][str(i)]["Version Name"]}\n'
+                    changelognumbers += f"- Changelog N°**{changelog['Changelogs'][str(i)]['Number']}**\n"
                 
             em.add_field(name="All changelogs versions", value=versions)
             em.add_field(name="All changelogs names", value=versionnames)
             em.add_field(name="All changelogs numbers", value=changelognumbers)
 
-            await ctx.send(embed=em, ephemeral=eph)
+            await ctx.send(f"Hey there! This command now shows the latest changelogs instead of all of them due to a changelog overfill. If you'd like to see a specific changelog, please use the cpage argument when using the command until developers find a workaround. Thank you!\n\- WoktopusGaming, owner/developer.", embed=em, ephemeral=eph)
         else:
             em = discord.Embed(color=0xEB1F1F)
-            em.add_field(name="Unexisting changelog", value=f"You've put an unexistant changelog number.\nThere is **{number}** registered changelogs up to now.\n</changelog:1097887315948470382> cpage 0 to list all changelog names.")
+            em.add_field(name="Unexisting changelog", value=f"You've put an unexistant changelog number.\nThere is **{number}** registered changelogs up to now.\nUse </changelog:1097887315948470382> cpage:0 to list the last 5 changelog names. (Error TTO-110)")
             await ctx.send(embed=em, ephemeral=eph)
     except Exception as e:
-        await ctx.send('I might have broke myself while retrieving the changelogs...', ephemeral=eph)
+        await ctx.send('I might have broke myself while retrieving the changelogs... (Error TTO-111)', ephemeral=eph)
         logging.error(traceback.format_exc())
         
 
@@ -250,7 +306,7 @@ async def gamble(ctx, amt:int, level:int = 0):
         with open("db/users.json", "w") as f:
           json.dump(users, f, indent="\t")
   except Exception as e:
-    await ctx.send("I sent my report to the developers. I might have broke the casino machine... Make sure to have an account open using </wallet:1066510029299134569>.")
+    await ctx.send("I sent my report to the developers. I might have broke the casino machine... Make sure to have an account open using </wallet:1066510029299134569>. (Error TTO-112 (deprecated, no Github support will be given))")
     logging.error(traceback.format_exc())
 
 
@@ -277,7 +333,7 @@ async def give(ctx, amt:int, mem:Member):
         json.dump(users, f, indent="\t")
       await ctx.send(f"Successfully given {earnings} to {mem.display_name}!")
     except Exception:
-      await ctx.send("I sent my report to the developers. I might have broke the giving machine...")
+      await ctx.send("I sent my report to the developers. I might have broke the giving machine... (Error TTO-113)")
       logging.error(traceback.format_exc())
 
 
@@ -302,7 +358,7 @@ async def wallet(ctx, member:Member = commands.parameter(default=lambda ctx: ctx
         em.add_field(name="TeamTheOne Wallet Balance", value=users_amt)
         await ctx.send(embed=em)
     except Exception as e:
-        await ctx.send("I sent my report to the developers. I might have broke the bank system...")
+        await ctx.send("I sent my report to the developers. I might have broke the bank system... (Error TTO-114)")
         logging.error(traceback.format_exc())
 
 
@@ -406,7 +462,7 @@ async def gen(ctx, amount = 1, hidemsg = True, strnum = 8, keytype = 1, value = 
         with open("db/users.json", 'w') as f:
             json.dump(keys, f, indent="\t")
     except Exception as e:
-        await ctx.send('While generating codes, I might have lost the keys...')
+        await ctx.send('While generating codes, I might have lost the keys... (Error TTO-115)')
         await logging.error(traceback.format_exc())
 
 
@@ -427,7 +483,7 @@ async def redeem(ctx, key, eph = True):
             em.add_field(
                 name="Invalid Key Typed",
                 value=
-                f"Your key typed is invalid. It might be your spelling or that the key is removed.\nAll letters are CAPS LOCKED if any, to help you. (Error TTO-313)"
+                f"Your key typed is invalid. It might be your spelling or that the key is removed.\nAll letters are CAPS LOCKED if any, to help you. (Error TTO-116)"
             )
             await ctx.send(embed=em, ephemeral=eph)
             return
@@ -438,13 +494,13 @@ async def redeem(ctx, key, eph = True):
                 em.add_field(
                     name="Unavailable Key",
                     value=
-                    f"The key you typed is unavailable. It might have been redeemed by someone else. Contact the developers for any issues. (Error TTO-314-1)"
+                    f"The key you typed is unavailable. It might have been redeemed by someone else. Contact the developers for any issues. (Error TTO-117)"
                 )
             else:
                 em.add_field(
                     name="Unavailable Key",
                     value=
-                    f"The key you typed is unavailable. It might have been removed. Contact the developers for any issues. (Error TTO-314-2)"
+                    f"The key you typed is unavailable. It might have been removed. Contact the developers for any issues. (Error TTO-118)"
                 )
             await ctx.send(embed=em, ephemeral=eph)
             return
@@ -453,7 +509,7 @@ async def redeem(ctx, key, eph = True):
             em.add_field(
                 name="Key Already Redeemed",
                 value=
-                f"You have already redeemed this key. (Error TTO-315)"
+                f"You have already redeemed this key. (Error TTO-119)"
             )
             await ctx.send(embed=em, ephemeral=eph)
             return
@@ -481,29 +537,10 @@ async def redeem(ctx, key, eph = True):
                 await ctx.send(embed=em, ephemeral=eph)
                 keys["Users"][str(ctx.author.id)]["Keys"][key] = True
                 
-            elif keys["Keys"][key]["Wallet"] == "TTO":
-                value = keys["Keys"][key]["Amount"]
-                keys["Users"][str(ctx.author.id)]["TTO"] += value
-                em = discord.Embed(color=0x00FF90)
-                if keys["Keys"][key]["Availability"] == 1:
-                    em.add_field(
-                        name="Key Redeemed!",
-                        value=
-                        f"YAYYY! You got a key! It's incredible. You got it faster than anyone else. WOWWW! You recieved {value} coins in your TeamTheOne Wallet. Enjoy!"
-                    )
-                else:
-                    em.add_field(
-                        name="Key Redeemed!",
-                        value=
-                        f"YAYYY! You got a key! It's incredible. You recieved {value} coins in your TeamTheOne Wallet. Enjoy!"
-                    )
-                await ctx.send(embed=em, ephemeral=eph)
-                keys["Users"][str(ctx.author.id)]["Keys"][key] = True
-                
             with open("db/users.json", "w") as f:
                 json.dump(keys, f, indent="\t")
     except Exception as e:
-        await ctx.send('While searching codes, I might have lost the keys to access the code database...')
+        await ctx.send('While searching codes, I might have lost the keys to access the code database... (Error TTO-120)')
         await logging.error(traceback.format_exc())
   
 
@@ -542,42 +579,8 @@ async def daily(ctx, eph = True):
             streakdailycount = 1 + streakth
             daily *= streakdailycount
             daily = round(daily)
-            users["Users"][str(ctx.author.id)]["Last Daily"] = ts
-            
-            if ctx.author.guild.id == 947175286787690527:
-                dailytto = random.randrange(25) * streakdailycount
-                dailytto = round(dailytto)
-                role = utils.get(ctx.guild.roles, id=1110685038237982860)
-                if role in ctx.author.roles:
-                    daily = daily * 5
-                    dailytto = dailytto * 5
-                    await ctx.send(f"You've got {daily} coins and {dailytto} TTO coins as a bonus of claiming in the corresponding partnered server!\nYou've also got a **5x** bonus from being Premium (TTO Coins too)\*!\nCome back at midnight GMT (UTC) to claim again!\nStreak Count: {streak+1} days (**{streakdailycount}**x bonus\*)\n\n\*Boost was applied before messaging", ephemeral=eph)
-                else:
-                    role = utils.get(ctx.guild.roles, id=1110685408058167316)
-                    if role in ctx.author.roles:
-                        daily = daily * 4
-                        dailytto = dailytto * 4
-                        await ctx.send(f"You've got {daily} coins and {dailytto} TTO coins as a bonus of claiming in the corresponding partnered server!\nYou've also got a **4x** bonus from being MVP++ (TTO Coins too)!\*\nCome back at midnight GMT (UTC) to claim again!\nStreak Count: {streak+1} days (**{streakdailycount}**x bonus\*)\n\n\*Boost was applied before messaging", ephemeral=eph)
-                    else:
-                        role = utils.get(ctx.guild.roles, id=1110685424009105459)
-                        if role in ctx.author.roles:
-                            daily = daily * 4
-                            await ctx.send(f"You've got {daily} coins and {dailytto} TTO coins as a bonus of claiming in the corresponding partnered server!\nYou've also got a **4x** bonus from being MVP+ (excludes TTO Coins)\*!\nCome back at midnight GMT (UTC) to claim again!\nStreak Count: {streak+1} days (**{streakdailycount}**x bonus\*)\n\n\*Boost was applied before messaging", ephemeral=eph)
-                        else:
-                            role = utils.get(ctx.guild.roles, id=1110685444586340413)
-                            if role in ctx.author.roles:
-                                daily = daily * 3
-                                await ctx.send(f"You've got {daily} coins and {dailytto} TTO coins as a bonus of claiming in the corresponding partnered server!\nYou've also got a **3x** bonus from being MVP (excludes TTO Coins)\*!\nCome back at midnight GMT (UTC) to claim again!\nStreak Count: {streak+1} days (**{streakdailycount}**x bonus\*)\n\n\*Boost was applied before messaging", ephemeral=eph)
-                            else:
-                                role = utils.get(ctx.guild.roles, id=1110685458276556910)
-                                if role in ctx.author.roles:
-                                    daily = daily * 2
-                                    await ctx.send(f"You've got {daily} coins and {dailytto} TTO coins as a bonus of claiming in the corresponding partnered server!\nYou've also got a **2x** bonus from being VIP+ (excludes TTO Coins)\*!\nCome back at midnight GMT (UTC) to claim again!\nStreak Count: {streak+1} days (**{streakdailycount}**x bonus\*)\n\n\*Boost was applied before messaging", ephemeral=eph)
-                                else:
-                                    await ctx.send(f"You've got {daily} coins and {dailytto} TTO coins as a bonus of claiming in the corresponding partnered server!\nCome back at midnight GMT (UTC) to claim again!\nStreak Count: {streak+1} days (**{streakdailycount}**x bonus\*)\n\n\*Boost was applied before messaging", ephemeral=eph)
-                users["Users"][str(ctx.author.id)]["TTO"] += dailytto
-            else:                        
-                await ctx.send(f"You've got {daily} coins! Come back at midnight GMT (UTC) to claim again!\nStreak Count: {streak+1} days (**{streakdailycount}**x bonus\*)\n\n\*Boost was applied before messaging", ephemeral=eph)
+            users["Users"][str(ctx.author.id)]["Last Daily"] = ts                       
+            await ctx.send(f"You've got {daily} coins! Come back at midnight GMT (UTC) to claim again!\nStreak Count: {streak+1} days (**{streakdailycount}**x bonus\*)\n\n\*Boost was applied before messaging", ephemeral=eph)
             users["Users"][str(ctx.author.id)]["Wallet"] += daily
         else:
             thinkity = 86400 - ts_seconds
@@ -590,7 +593,7 @@ async def daily(ctx, eph = True):
         with open('db/users.json', 'w') as f:
             json.dump(users, f, indent="\t")
     except Exception as e:
-        await ctx.send(f"I am sorry but for an unknown reason I can't retrieve something...", ephemeral=eph)
+        await ctx.send(f"I am sorry but for an unknown reason I can't retrieve something... (Error TTO-121)", ephemeral=eph)
         await logging.error(traceback.format_exc())
 
 @discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
@@ -599,9 +602,9 @@ async def daily(ctx, eph = True):
 @commands.before_invoke(record)
 async def shop(ctx, eph = True):
     try:
-        await ctx.send("We are sorry, the shop isn't yet opened.", ephemeral=eph)
+        await ctx.send("We are sorry, the shop isn't yet opened. (Error TTO-122)", ephemeral=eph)
     except Exception as e:
-        await ctx.send(f"We are sorry {ctx.author.mention}, but an error occured. I've let the developer know this.", ephemeral=eph)
+        await ctx.send(f"We are sorry {ctx.author.mention}, but an error occured. I've let the developer know this. (Error TTO-123)", ephemeral=eph)
         await logging.error(traceback.format_exc())
 
 
