@@ -27,8 +27,10 @@ def comparison_check(tempfilename, filename):
     try:
         comp = filecmp.cmp(f"{filename}", f"{tempfilename}", shallow=False)
         if comp:
+            print("Files are indentical, skipping...")
             os.remove(f"{tempfilename}")
         else:
+            print("Changes were made, installing...")
             os.remove(f"{filename}")
             os.rename(f"{tempfilename}", f"{filename}")
         return True
@@ -77,4 +79,5 @@ def get_updates():
     for i in range(0, len(alldirs["normal-allinone"]), 1):
         download_update(default_target_url, alldirs["temp-allinone"][i], alldirs["normal-allinone"][i])
         comparison_check(alldirs["temp-allinone"][i], alldirs["normal-allinone"][i])
+        print(" ")
     
