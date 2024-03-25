@@ -49,6 +49,9 @@ def comparison_check(tempfilename, filename):
             os.remove(f"{filename}")
             os.rename(f"{tempfilename}", f"{filename}")
         return True
+    except FileNotFoundError:
+        print("New file. Installing...")
+        os.rename(f"{tempfilename}", f"{filename}")
     except Exception as e:
         print(f"Please open an issue on Github including this:\n")
         print("Error code TTO-002 - file comparison failed")
