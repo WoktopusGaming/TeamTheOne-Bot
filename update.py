@@ -58,7 +58,7 @@ def check_for_updates():
         if users["stable-latest-number"] == changelog["stable-latest-number"] and users["stable-latest-number"] == changelog["stable-latest-number"]:
             os.remove("db/temp.updatelog.json")
             return False
-        elif users["stable-latest-number"] != changelog["stable-latest-number"] and users["stable-latest-number"] >= changelog["stable-latest-number"]:
+        else:
             return True
     except Exception as e:
         print(f"Please open an issue on Github including this:\n")
