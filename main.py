@@ -50,26 +50,29 @@ logger.addHandler(handles)
 
 #update.check_for_updates()
 
-logger.info("Checking for bot updates...")
-upd = update.check_for_updates
+logger.info("Checking for bot and updater updates...")
+upd = update.check_for_updates()
+
+target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/update.py"
+data = urllib.request.urlopen(target_url)
+with open("temp.update.py", "w") as f:
+    for line in data:
+        f.write(line.decode("utf-8"))
+        
+    comp = filecmp.cmp("update.py", "temp.update.py", shallow=False)
+    if comp:
+        os.remove("temp.update.py")
+    else:
+        logger.info("Update for updater was found. Installing...")
+        os.remove("update.py")
+        os.rename("temp.update.py", "update.py")
+        logger.info("Update for updater was installed. Restarting main app...")
+        os.system("main.py")
+            
 if upd == False:
     pass
 elif upd == True:
-    logger.info("An update was found. Installing update...")
-    target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/update.py"
-    data = urllib.request.urlopen(target_url)
-    with open("temp.update.py", "w") as f:
-        for line in data:
-            f.write(line.decode("utf-8"))
-        
-        comp = filecmp.cmp("update.py", "temp.update.py", shallow=False)
-        if comp:
-            os.remove("temp.update.py")
-        else:
-            os.remove("update.py")
-            os.rename("temp.update.py", "update.py")
-            logger.info("Update for \"update.py\" was installed. Restarting main app...")
-            os.system("main.py")
+    logger.info("A bot update was found. Installing update...")
     update.get_updates()
         
 
