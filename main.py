@@ -59,15 +59,15 @@ with open("temp.update.py", "w") as f:
     for line in data:
         f.write(line.decode("utf-8"))
         
-    comp = filecmp.cmp("update.py", "temp.update.py", shallow=False)
-    if comp:
-        os.remove("temp.update.py")
-    else:
-        logger.info("Update for updater was found. Installing...")
-        os.remove("update.py")
-        os.rename("temp.update.py", "update.py")
-        logger.info("Update for updater was installed. Restarting main app...")
-        os.system("main.py")
+comp = filecmp.cmp("update.py", "temp.update.py", shallow=False)
+if comp:
+    os.remove("temp.update.py")
+else:
+    logger.info("Update for updater was found. Installing...")
+    os.remove("update.py")
+    os.rename("temp.update.py", "update.py")
+    logger.info("Update for updater was installed. Restarting main app...")
+    os.system("main.py")
             
 if upd == False:
     pass

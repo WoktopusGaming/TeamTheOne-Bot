@@ -68,8 +68,8 @@
     ]
   },
   "temp-allinone": [
-    "temp.updatelog.json",
-    "temp.alldirs.json",
+    "db/temp.updatelog.json",
+    "db/temp.alldirs.json",
     "templates/temp.index.html",
     "static/css/temp.bootstrap.min.css",
     "static/js/temp.bootstrap.min.js",
@@ -84,8 +84,8 @@
     "temp.main.py"
   ],
   "normal-allinone": [
-    "updatelog.json",
-    "alldirs.json",
+    "db/updatelog.json",
+    "db/alldirs.json",
     "templates/index.html",
     "static/css/bootstrap.min.css",
     "static/js/bootstrap.min.js",

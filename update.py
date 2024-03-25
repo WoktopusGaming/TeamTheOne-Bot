@@ -1,19 +1,34 @@
+from urllib.error import HTTPError
 import urllib.request
 import json
 import os
 import traceback
 import filecmp
 
-def download_update(default_url, tempfilename, filename):
-    print(f"Downloading \"{filename}\" from repository...")
+def download_update(default_url, fail_url, tempfilename, filename):
+    print(f"Downloading file from repository...")
     try:
-        target_url = f"{default_url}{filename}"
+        target_url = f"{default_url}/{filename}"
+        print(f"File link: {target_url}")
         data = urllib.request.urlopen(target_url)
     
         with open(f"{tempfilename}", "w") as f:
             for line in data:
                 f.write(line.decode("utf-8"))
         
+        return True
+    except HTTPError as e:
+        if e.status != 404:
+            raise Exception
+        print("File from stable release not found. Looking for master branch...")
+        target_url = f"{fail_url}/{filename}"
+        print(f"File link: {target_url}")
+        data = urllib.request.urlopen(target_url)
+    
+        with open(f"{tempfilename}", "w") as f:
+            for line in data:
+                f.write(line.decode("utf-8"))
+  
         return True
     except Exception as e:
         print(f"Please open an issue on Github including this:\n")
@@ -71,13 +86,23 @@ def check_for_updates():
 def get_updates():
     with open("db/temp.updatelog.json") as f:
         changelog = json.load(f)
+        f.close()
     with open("db/alldirs.json") as f:
         alldirs = json.load(f)
+        f.close()
     
-    default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/{changelog['stable-latest-version-num']}/{changelog['stable-latest-version-com']}/"
+    default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/{changelog['stable-latest-version-num']}/{changelog['stable-latest-version-com']}"
+    secondary_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
+
     
     for i in range(0, len(alldirs["normal-allinone"]), 1):
-        download_update(default_target_url, alldirs["temp-allinone"][i], alldirs["normal-allinone"][i])
+        print(alldirs["normal-allinone"][i])
+        if alldirs["normal-allinone"][i] != "db/updatelog.json":
+            download_update(default_target_url, secondary_target_url, alldirs["temp-allinone"][i], alldirs["normal-allinone"][i])
         comparison_check(alldirs["temp-allinone"][i], alldirs["normal-allinone"][i])
+        if alldirs["normal-allinone"][i] == "db/alldirs.json":
+            with open("db/alldirs.json") as f:
+                alldirs = json.load(f)
+                f.close()
         print(" ")
     
