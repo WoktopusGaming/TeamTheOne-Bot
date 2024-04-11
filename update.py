@@ -5,6 +5,9 @@ import os
 import traceback
 import filecmp
 
+def get_vnum():
+    return 1
+
 def download_update(default_url, fail_url, tempfilename, filename):
     print(f"Downloading file from repository...")
     try:
@@ -58,7 +61,7 @@ def comparison_check(tempfilename, filename):
         traceback.format_exc(e)
         return False
 
-def check_for_updates():
+def check_for_updates(vbranch = "stable"):
     try:    
         target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/updatelog.json"
         data = urllib.request.urlopen(target_url)
@@ -73,11 +76,22 @@ def check_for_updates():
         with open("db/updatelog.json") as d:
             changelog = json.load(d)
 
-        if users["stable-latest-number"] == changelog["stable-latest-number"] and users["stable-latest-version-num"] == changelog["stable-latest-version-num"] and users["stable-latest-version-com"] == changelog["stable-latest-version-com"]:
-            os.remove("db/temp.updatelog.json")
-            return False
+        if vbranch != "Beta":
+            if users["stable-latest-number"] == changelog["stable-latest-number"] and users["stable-latest-version-num"] == changelog["stable-latest-version-num"] and users["stable-latest-version-com"] == changelog["stable-latest-version-com"]:
+                os.remove("db/temp.updatelog.json")
+                return False
+            elif users["stable-latest-number"] > changelog["stable-latest-number"] and users["stable-latest-version-num"] != changelog["stable-latest-version-num"] and users["stable-latest-version-com"] != changelog["stable-latest-version-com"]:
+                return True
+            else:
+                print(f"- Sorry. Your file 'db/changelog.json' got manually overwritten data, or data errors. Please redownload it from\n- https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/updatelog.json\n- to let the process rightfully run. Thank you for your understanding.")
         else:
-            return True
+            if users["beta-latest-number"] == changelog["beta-latest-number"] and users["beta-latest-version-num"] == changelog["beta-latest-version-num"] and users["beta-latest-version-com"] == changelog["beta-latest-version-com"]:
+                os.remove("db/temp.updatelog.json")
+                return False
+            elif users["beta-latest-number"] > changelog["beta-latest-number"] and users["beta-latest-version-num"] != changelog["beta-latest-version-num"] and users["beta-latest-version-com"] != changelog["beta-latest-version-com"]:
+                return True
+            else:
+                print(f"- Sorry. Your file 'db/changelog.json' got manually overwritten data, or data errors. Please redownload it from\n- https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/updatelog.json\n- to let the process rightfully run. Thank you for your understanding.") 
     except Exception as e:
         print(f"Please open an issue on Github including this:\n")
         print("Error code TTO-003 - update check failed")
@@ -86,7 +100,7 @@ def check_for_updates():
     
 
     
-def get_updates():
+def get_updates(vbranch = "stable"):
     with open("db/temp.updatelog.json") as f:
         changelog = json.load(f)
         f.close()
@@ -94,8 +108,12 @@ def get_updates():
         alldirs = json.load(f)
         f.close()
     
-    default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/{changelog['stable-latest-version-num']}/{changelog['stable-latest-version-com']}"
-    secondary_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
+    if vbranch != "Beta":
+        default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/{changelog['stable-latest-version-num']}/{changelog['stable-latest-version-com']}"
+        secondary_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
+    else:
+        default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
+        secondary_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
 
     
     for i in range(0, len(alldirs["normal-allinone"]), 1):

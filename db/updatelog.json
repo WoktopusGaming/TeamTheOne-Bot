@@ -1,8 +1,12 @@
 {
-	"latest-num": 6,
+	"changelog-startpoint": 6,
+	"stable-updpy": 1,
 	"stable-latest-number": 11,
 	"stable-latest-version-num": "v2.1.0",
 	"stable-latest-version-com": "v2023.07.07",
+	"beta-latest-number": 12,
+	"beta-latest-version-num": "v2.2.0",
+	"beta-latest-version-com": "v2024.04.??",
 	"Changelogs": {
 		"1": {
 			"Detailed Changelog": "- New command /clocktimer (timer)\n- Improvement of the bot (made extensions for easy reloading)",
@@ -83,7 +87,7 @@
 		},
 		"12": {
 			"Detailed Changelog": "Hello! This update is a beta update! If you see this, immediately install a stable release package or ask the owner to do so!",
-			"Compact Version": "v2024.03.??",
+			"Compact Version": "v2024.04.??",
 			"Version Name": "BETA UPDATE",
 			"Second Version Number": "v2.2.0",
 			"Number": 12

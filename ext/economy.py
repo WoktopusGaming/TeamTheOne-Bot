@@ -180,7 +180,7 @@ async def changelog(ctx, cpage = 0, eph = True):
             em = discord.Embed(color=0x00FF90)
 
             for i in changelog["Changelogs"]:
-                if int(i) <= changelog["latest-num"]:
+                if int(i) <= changelog["changelog-startpoint"]:
                     pass
                 else:
                     versions += f"- {changelog['Changelogs'][str(i)]['Compact Version']} / {changelog['Changelogs'][str(i)]['Second Version Number']}\n"

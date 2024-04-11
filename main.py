@@ -15,16 +15,26 @@ import filecmp # imports the file comparison library
 import socket # imports the socket library
 import aiohttp # imports the aiohttp library
 
-from dexer import dexer # imports the dexer function from dexer.py (dashboard module)
-import update # imports the whole update.py file (update and checking module)
+try:
+    from dexer import dexer # imports the dexer function from dexer.py (dashboard module)
+except ModuleNotFoundError or NameError:
+    pass
+except Exception as e:
+    traceback.format_exc(e)
+
+try:
+    import update # imports the whole update.py file (update and checking module)
+    updateoop = 0
+except ModuleNotFoundError or NameError:
+    updateoop = 1
+except Exception as e:
+    traceback.format_exc(e)
 
 from discord import Member # imports the Member class from discord library (used as a shortcut in code)
 from discord.ext import commands # imports the commands module from discord's extended library
 from discord.ext import tasks # imports the tasks module from discord's extended library
 from discord import app_commands # imports the app_commands library from discord library
 #"from pretty_help import AppMenu, PrettyHelp" # ignore
-
-dexer() # runs the dexer function (runs the dashboard)
 
 logger = logging.getLogger('discord') # gets logger "discord" (basic logger from discord library)
 logger.setLevel(logging.INFO) # sets console information level to "info"
@@ -48,35 +58,78 @@ handles.setLevel(logging.INFO)
 handles.setFormatter(formatter)
 logger.addHandler(handles)
 
-#update.check_for_updates()
+# vnum section
 
-logger.info("Checking for bot and updater updates...")
-upd = update.check_for_updates()
+def get_vnum():
+    return 12
+
+def get_vbranch():
+    return "Beta"
+
+# end separation
+# updating section
+
+if updateoop != 1:
+    logger.info("Checking for bot and updater updates...")
+    upd = update.check_for_updates(get_vbranch())
+else:
+    logger.error("Could not check for updates: updater missing.\n- Please download it from \n- https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/update.py \n- and restart the app.")
 
 target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/update.py"
 data = urllib.request.urlopen(target_url)
-with open("temp.update.py", "w") as f:
-    for line in data:
-        f.write(line.decode("utf-8"))
-        
-comp = filecmp.cmp("update.py", "temp.update.py", shallow=False)
-if comp:
-    os.remove("temp.update.py")
-else:
-    logger.info("Update for updater was found. Installing...")
-    os.remove("update.py")
-    os.rename("temp.update.py", "update.py")
-    logger.info("Update for updater was installed. Restarting main app...")
-    os.system("main.py")
-            
-if upd == False:
-    pass
-elif upd == True:
-    logger.info("A bot update was found. Installing update...")
-    update.get_updates()
-        
+target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/changelog.json"
+changelogreq = urllib.request.urlopen(target_url)
+changelog = json.load(changelogreq)
 
-    
+main_version = get_vnum()
+main_branch = get_vbranch()
+update_version = update.get_vnum()
+
+if update_version < changelog["stable-updpy"]:
+    with open("temp.update.py", "w") as f:
+        for line in data:
+            f.write(line.decode("utf-8"))
+    if updateoop != 1:
+        comp = filecmp.cmp("update.py", "temp.update.py", shallow=False)
+        if comp:
+            os.remove("temp.update.py")
+        else:
+            logger.info("Update for updater was found. Installing...")
+            os.remove("update.py")
+            os.rename("temp.update.py", "update.py")
+            logger.info("Update for updater was installed. Restarting main app...")
+            os.system("main.py")
+    else:
+        logger.info("Updater was not found. Installing...")
+        os.rename("temp.update.py", "update.py")
+        logger.info("Updater is now installed. Restarting main app...")
+        os.system("main.py")
+
+
+
+if updateoop != 1:
+    if upd == False:
+        logger.info("No update was found.")
+        pass
+    elif upd == True:
+        if main_branch == "Beta":
+                logger.info("An update was found for the Beta version. Installing update...")
+                logger.warn(f"WARNING: Beta versions are unstable, and any change will be installed and will overwrite any current file! It is recommended you use a stable version instead! Ignore if you are aware of the consequences this could give with your clients. If you do not want this to be shown again, you can add a # at the start of lines 117 and 118 in main.py, needing to be readded every time the update happens. If you are fine with overwriting any file, press any letter then Enter. If you are not, please type \"exit\" then Enter. Thank you for your understanding.")
+                upd_exit = input()
+                try:
+                    if upd_exit == "exit":
+                        logger.info("Beta version update installation cancelled.")
+                        pass
+                    else:
+                        update.get_updates("Beta")
+                except NameError:
+                    logger.info("Skipping beta version update warning.")
+                    update.get_updates("Beta")
+        else:
+            if main_version < changelog["stable-latest-number"]:
+                logger.info("An update was found for the stable release. Installing update...")
+                update.get_updates()
+            
 
 #end separation
 #class UnfilteredBot - discord.bot invoke
@@ -97,8 +150,8 @@ bot = UnfilteredBot(command_prefix="$", intents=discord.Intents.all(), loop=asyn
 #end separation
 #delete startup.py if setup configured
 
-#target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/startup.py"
-#data = urllib.request.urlopen(target_url)
+target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/startup.py"
+data = urllib.request.urlopen(target_url)
 
 try:
     with open("db/users.json") as f:
@@ -112,10 +165,9 @@ except FileNotFoundError:
                 d.write(line.decode("utf-8"))
             d.close()
         os.system('startup.py')
-    quit(code=sys._ExitCode)
-except Exception as e:    
+        quit()
+except Exception as e:
     logger.error(traceback.format_exc(e))
-    quit(code=sys._ExitCode)
 
 try:
     f = open('.token')
@@ -128,21 +180,27 @@ except FileNotFoundError:
                 d.write(line.decode("utf-8"))
             d.close()
         os.system('startup.py')
-    quit(code=sys._ExitCode)
+        quit()
 except Exception as e:
     logger.error(traceback.format_exc(e))
-    quit(code=sys._ExitCode)
 
 try:
     if users['bot-configured'] == True and users['bot-startup'] == True:
         os.remove('startup.py')
 except FileNotFoundError:
     pass
+except NameError:
+    try:
+        os.system('startup.py')
+    except FileNotFoundError:
+        with open("startup.py", "w") as d:
+            for line in data:
+                d.write(line.decode("utf-8"))
+            d.close()
+        os.system('startup.py')
+        quit()
 except Exception as e:
     logger.error(traceback.format_exc(e))
-    quit(code=sys._ExitCode)
-else:
-    pass
 
 
 #end separation
@@ -154,6 +212,13 @@ async def record(ctx):
     f.close()
 
 #end separation
+
+try:
+    dexer() # runs the dexer function (runs the dashboard)
+except NameError:
+    pass
+except Exception as e:
+    traceback.format_exc(e)
 
 @bot.event
 async def on_ready():
@@ -358,4 +423,4 @@ while True: # starts an infinite loop
             logger.warning(traceback.format_exc(e)) # reports the whole traceback (necessary as it doesn't do automatically)
             time.sleep(5) # sleeps the loop for five seconds
             raise e # raises the error
-            quit(code=sys._ExitCode)
+            quit()

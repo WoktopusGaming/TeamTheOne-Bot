@@ -125,5 +125,3 @@ else:
 print("We will launch the bot for you, please wait...")
 print(" ")
 os.system("main.py")
-quit(code=sys._ExitCode)
-
