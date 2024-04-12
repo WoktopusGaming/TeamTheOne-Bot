@@ -77,7 +77,7 @@ else:
 
 target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/update.py"
 data = urllib.request.urlopen(target_url)
-target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/changelog.json"
+target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/updatelog.json"
 changelogreq = urllib.request.urlopen(target_url)
 changelog = json.load(changelogreq)
 
