@@ -67,6 +67,13 @@ def get_vbranch():
     return "Beta"
 
 # end separation
+
+# note to self:
+# 0xA3F8D3 = Light Green / Neo Mint - succesful embeds
+# 0xF8A3C8 = Light Red / Pastel Magenta - error embeds
+# 0x66CAFE = Light Blue / Blue Mana - info or TTO embeds (funny cafe)
+# found colors with https://colorkit.co/color/
+
 # updating section
 
 if updateoop != 1:
@@ -123,12 +130,15 @@ if updateoop != 1:
                     else:
                         update.get_updates("Beta")
                 except NameError:
-                    logger.info("Skipping beta version update warning.")
+                    logger.info("Skipping Beta version update warning.")
                     update.get_updates("Beta")
         else:
             if main_version < changelog["stable-latest-number"]:
                 logger.info("An update was found for the stable release. Installing update...")
                 update.get_updates()
+    elif upd == None:
+        devmode = 1
+        pass
             
 
 #end separation
@@ -186,7 +196,11 @@ except Exception as e:
 
 try:
     if users['bot-configured'] == True and users['bot-startup'] == True:
-        os.remove('startup.py')
+        if devmode != 1:
+            os.remove('startup.py')
+        else:
+            print("Developer mode enabled, skipping startup.py deletion check.")
+            pass
 except FileNotFoundError:
     pass
 except NameError:
@@ -224,8 +238,8 @@ except Exception as e:
 async def on_ready():
     print("Bot is online and ready as", format("TeamTheOne Bot"))
     await bot.change_presence(
-        activity=discord.Activity(type=discord.ActivityType.listening,
-                                  name="TeamTheOne Bot | owned by WoktopusGaming | BETA v2.2.0"))
+        activity=discord.Activity(type=discord.ActivityType.playing,
+                                  name="on BETA v2.2.0 | TTO"))
 
     try:
         await bot.load_extension("ext.economy")
@@ -242,7 +256,7 @@ async def on_command_error(ctx, error):
     logger.debug(
         f"Error {error} happened using /{ctx.command} as {ctx.author.name}.")
     if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(colour=0xEB2113)  #red color
+        em = discord.Embed(colour=0xF8A3C8)  #light red color
         em.add_field(
             name="Whoa! Slow down!",
             value=
@@ -251,7 +265,7 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=em, delete_after=10)
         return 0
     if isinstance(error, commands.MissingPermissions):
-        em = discord.Embed(color=0xEB2113) #red color
+        em = discord.Embed(color=0xF8A3C8) #light red color
         em.add_field(
             name="I don't really recognize you...",
             value=
@@ -260,7 +274,7 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=em, delete_after=10)
         return 0
     if isinstance(error, commands.NotOwner):
-        em = discord.Embed(color=0xEB2113) #red color
+        em = discord.Embed(color=0xF8A3C8) #light red color
         em.add_field(
             name="Don't surpass to my owner!",
             value=
@@ -268,7 +282,7 @@ async def on_command_error(ctx, error):
         )
         await ctx.send(embed=em, delete_after=10)
     if isinstance(error, commands.NoPrivateMessage):
-        em = discord.Embed(color=0xEB2113) #red color
+        em = discord.Embed(color=0xF8A3C8) #light red color
         em.add_field(
             name="Hey! Discord blocked me!",
             value=
@@ -309,15 +323,17 @@ async def unload(ctx, ext):
 async def reload(ctx, ext):
     try:
         if ext == "all":
-            await bot.reload_extension("ext.economy")
-            em = discord.Embed(color=0x008525)
+            alldirs = json.load(open("db/alldirs.json"))
+            for i in range(0, len(alldirs["bot-extensions"]), 1):
+                await bot.reload_extension(i)
+            em = discord.Embed(color=0xA3F8D3)
             em.add_field(name="Reloaded all extensions",
                          value=f"We successfully reloaded all extensions!")
             await ctx.send(embed=em, ephemeral=True)
             await bot.tree.sync()
             return 0
         await bot.reload_extension(ext)
-        em = discord.Embed(color=0x008525)
+        em = discord.Embed(color=0xA3F8D3)
         em.add_field(name="Reloaded extension",
                      value=f'We reloaded this extension successfully: \"{ext}\".')
         await ctx.send(embed=em, ephemeral=True)
@@ -337,7 +353,7 @@ async def echo(ctx, message):
     await ctx.send(
         "I have an error sending your message. Please contact it with developers. I am collecting error data so it can be sent to developers. (Error TTO-104)",
         ephemeral=True)
-    logger.debug(f"Error met while sending message, user is {ctx.author.name}")
+    logger.debug(f"{ctx.author.name} used /echo! But the bot was immune...")
     #await ctx.send(message)
 
 
@@ -346,20 +362,16 @@ async def echo(ctx, message):
 @commands.guild_only()
 @commands.before_invoke(record)
 async def ban(ctx, member: Member, reason):
-    if ctx.message.author.guild_permissions.administrator or ctx.message.author.guild_permissions.ban_members or ctx.message.author.id == 798537646762754079 or ctx.message.author.id == 731537767099531324:
-        if member == "798537646762754079" or member == "731537767099531324":
-            await ctx.send(
-                "Why would I ban my developers??? They brought me to life! Use another commands or ban them by yourself. :D (Error TTO-105)"
-            )
-            logger.warning(
-                f"Ban try from {ctx.author.name} affecting developers."
-            )
-            return 0
-        else:
-            await ctx.guild.ban(member)
-            await ctx.send(
-                f"Successfully banned {member} from this server. Reason: {reason} (Written by {ctx.author})"
-            )
+    if ctx.message.author.guild_permissions.administrator or ctx.message.author.guild_permissions.ban_members:
+        await ctx.guild.ban(member)
+        await ctx.send(
+            f"Successfully banned {member} from this server. Reason: {reason} (Written by {ctx.author}.)"
+        )
+    else:
+        await ctx.send(
+            f"Oops! I cannot ban {member} from the server because the member you tried to ban is higher than me. Make a manual ban instead? (Error TTO-105)"
+        )
+        logger.debug(f"Ban didn't work for {ctx.author.name}.")
 
 
 @bot.hybrid_command()
@@ -367,12 +379,12 @@ async def ban(ctx, member: Member, reason):
 @commands.guild_only()
 @commands.before_invoke(record)
 async def kick(ctx, member: Member):
-    if ctx.message.author.guild_permissions.administrator or ctx.message.author.guild_permissions.kick_members or ctx.message.author.id == "798537646762754079" or ctx.message.author.id == "731537767099531324":
+    if ctx.message.author.guild_permissions.administrator or ctx.message.author.guild_permissions.kick_members:
         await ctx.guild.kick(member)
         await ctx.send(f"Successfully kicked {member} from the server.")
     else:
         await ctx.send(
-            f"Oops! I cannot kick {member} from the server because you either had no permission or that the member you tried to kick is higher than me. (Error TTO-106)"
+            f"Oops! I cannot kick {member} from the server because the member you tried to kick is higher than me. Make a manual kick instead? (Error TTO-106)"
         )
         logger.debug(f"Kick didn't work for {ctx.author.name}.")
         
@@ -404,7 +416,7 @@ while True: # starts an infinite loop
     except discord.HTTPException as e: # if discord returns an HTTP error
         if e.status == 429: # if discord returned a ratelimited status (429)
             logger.warning( # logs a warning on the console side
-                "The Discord servers denied the connection for making too many requests -/- Error 429 (Error TTO-004)" # ratelimit message
+                "The Discord servers denied the connection for making too many requests -/- Error 429" # ratelimit message
             ) 
             os.system('restart.py') # uses a independant restarter, the console runs that file as its main (replit/server-hosted, deprecated)
             os.system('kill 1') # kills the current process of this current file, closing it / restarting everything (replit/server-hosted)

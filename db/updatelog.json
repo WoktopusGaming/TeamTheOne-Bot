@@ -1,10 +1,11 @@
 {
 	"changelog-startpoint": 6,
-	"stable-updpy": 1,
+	"stable-updpy": 1.01,
+	"stable-updpy-userversion": "v1.0.1",
 	"stable-latest-number": 11,
 	"stable-latest-version-num": "v2.1.0",
 	"stable-latest-version-com": "v2023.07.07",
-	"beta-latest-number": 12,
+	"beta-latest-number": 12.01,
 	"beta-latest-version-num": "v2.2.0",
 	"beta-latest-version-com": "v2024.04.??",
 	"Changelogs": {
@@ -86,7 +87,7 @@
 			"Number": 11
 		},
 		"12": {
-			"Detailed Changelog": "Hello! This update is a beta update! If you see this, immediately install a stable release package or ask the owner to do so!",
+			"Detailed Changelog": "Hello! This update is a beta update! If you see this, immediately install a stable release package or ask the owner to do so! Unless you know what you are doing.",
 			"Compact Version": "v2024.04.??",
 			"Version Name": "BETA UPDATE",
 			"Second Version Number": "v2.2.0",

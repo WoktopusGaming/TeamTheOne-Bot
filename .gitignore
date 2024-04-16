@@ -151,13 +151,14 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# TTOB important files, to not distribute
+# TTO app files
 *.log
-*.token
-db/users.json
+.token
 
-# Developer files (temp)
-backup-startup.py
+# TTO databases
+db/*
+!db/updatelog.json
+!db/alldirs.json
 
 # Visual Basic Studio files
 .vs/

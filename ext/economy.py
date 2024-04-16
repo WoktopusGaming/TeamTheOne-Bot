@@ -4,6 +4,7 @@ from discord import Member
 from discord import utils
 
 import json
+import os
 import discord
 import random
 import traceback
@@ -11,6 +12,7 @@ import logging
 import datetime
 import time
 
+# note to self
 # Item reminder:
 # - Type 1 = Unconsumable
 # - Type 2 = Consumable
@@ -167,7 +169,7 @@ async def changelog(ctx, cpage = 0, eph = True):
         number += 1
     
     try:
-        em = discord.Embed(color=0x00FF90)
+        em = discord.Embed(color=0x66CAFE)
         em.add_field(name="Changelog", value=changelog['Changelogs'][str(cpage)]['Detailed Changelog'])
         em.add_field(name="Versions", value=f"- {changelog['Changelogs'][str(cpage)]['Compact Version']}\n- {changelog['Changelogs'][str(cpage)]['Second Version Number']}")
         em.add_field(name="Version Name and Number", value=f'- {changelog["Changelogs"][str(cpage)]["Version Name"]}\n- Changelog N°{changelog["Changelogs"][str(cpage)]["Number"]}')
@@ -177,7 +179,7 @@ async def changelog(ctx, cpage = 0, eph = True):
             versions = f""
             versionnames = f""
             changelognumbers = f""
-            em = discord.Embed(color=0x00FF90)
+            em = discord.Embed(color=0x66CAFE)
 
             for i in changelog["Changelogs"]:
                 if int(i) <= changelog["changelog-startpoint"]:
@@ -193,7 +195,7 @@ async def changelog(ctx, cpage = 0, eph = True):
 
             await ctx.send(f"Hey there! This command now shows the latest changelogs instead of all of them due to a changelog overfill. If you'd like to see a specific changelog, please use the cpage argument when using the command until developers find a workaround. Thank you!\n\- WoktopusGaming, owner/developer.", embed=em, ephemeral=eph)
         else:
-            em = discord.Embed(color=0xEB1F1F)
+            em = discord.Embed(color=0xF8A3C8)
             em.add_field(name="Unexisting changelog", value=f"You've put an unexistant changelog number.\nThere is **{number}** registered changelogs up to now.\nUse </changelog:1097887315948470382> cpage:0 to list the last 5 changelog names. (Error TTO-110)")
             await ctx.send(embed=em, ephemeral=eph)
     except Exception as e:
@@ -275,7 +277,7 @@ async def gamble(ctx, amt:int, level:int = 0):
         await ctx.send(f"You got {random.randrange(33, 67)} and won {earnings}, which is **{m}x** your bets (you lost nothing).")
         round(earnings)
         users["Users"][str(ctx.author.id)]["Wallet"] += earnings
-        users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name + "#" + str(ctx.author.discriminator) 
+        users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
         with open("db/users.json", "w") as f:
           json.dump(users, f, indent="\t")
       else:
@@ -302,7 +304,7 @@ async def gamble(ctx, amt:int, level:int = 0):
         await ctx.send(f"You got {random.randrange(66, 101)} and won {earnings}, which is **{m}x** your bets (you won the jackpot, and so lost nothing).")
         round(earnings)
         users["Users"][str(ctx.author.id)]["Wallet"] += earnings
-        users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name + "#" + str(ctx.author.discriminator)
+        users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
         with open("db/users.json", "w") as f:
           json.dump(users, f, indent="\t")
   except Exception as e:
@@ -327,8 +329,8 @@ async def give(ctx, amt:int, mem:Member):
         return
       users["Users"][str(ctx.author.id)]["Wallet"] -= earnings
       users["Users"][str(mem.id)]["Wallet"] += earnings
-      users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name + "#" + str(ctx.author.discriminator)
-      users["Users"][str(mem.id)]["Username"] = mem.name + "#" + str(mem.discriminator)
+      users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
+      users["Users"][str(mem.id)]["Username"] = mem.name
       with open("db/users.json", "w") as f:
         json.dump(users, f, indent="\t")
       await ctx.send(f"Successfully given {earnings} to {mem.display_name}!")
@@ -351,9 +353,9 @@ async def wallet(ctx, member:Member = commands.parameter(default=lambda ctx: ctx
     
         wallet_amt = users["Users"][str(user.id)]["Wallet"]
         users_amt = users["Users"][str(user.id)]["TTO"]
-        users["Users"][str(user.id)]["Username"] = user.name + "#" + str(user.discriminator)
+        users["Users"][str(user.id)]["Username"] = user.name
 
-        em = discord.Embed(title=f"{mem.name}'s balance.", color=discord.Color.teal())
+        em = discord.Embed(title=f"{mem.name}'s balance.", color=0x66CAFE)
         em.add_field(name="Multiserver Wallet Balance", value=wallet_amt)
         em.add_field(name="TeamTheOne Wallet Balance", value=users_amt)
         await ctx.send(embed=em)
@@ -373,7 +375,7 @@ async def beg(ctx):
     users = await get_users_data()
     earnings = random.randrange(126)
     users["Users"][str(user.id)]["Wallet"] += earnings
-    users["Users"][str(user.id)]["Username"] = user.name + "#" + str(user.discriminator)
+    users["Users"][str(user.id)]["Username"] = user.name
     with open("db/users.json", 'w') as f:
         json.dump(users, f, indent="\t")
     await ctx.send(f"Someone gave you {earnings} coins! You added them to your multiserver wallet.")
@@ -395,7 +397,7 @@ async def rob(ctx, member:Member):
   if num != 1:
       coinless = random.randrange(151)
       users["Users"][str(ctx.author.id)]["Wallet"] -= coinless
-      users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name + "#" + str(ctx.author.discriminator)
+      users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
       with open("db/users.json", "w") as f:
         json.dump(users, f, indent="\t")
       await ctx.send(f"Bad luck! {member.display_name} saw you trying to rob his money! He thought you robbed already, so you apologized and lost {coinless} coins.")
@@ -404,8 +406,8 @@ async def rob(ctx, member:Member):
     coinless = random.randrange(151)
     users["Users"][str(ctx.author.id)]["Wallet"] += coinless
     users["Users"][str(member.id)]["Wallet"] -= coinless
-    users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name + "#" + str(ctx.author.discriminator)
-    users["Users"][str(member.id)]["Username"] = member.name + "#" + str(member.discriminator)
+    users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
+    users["Users"][str(member.id)]["Username"] = member.name
     with open("db/users.json", "w") as f:
       json.dump(users, f, indent="\t")
     await ctx.send(f"You successfully robbed {member.display_name} and won {coinless}.")
@@ -479,7 +481,7 @@ async def redeem(ctx, key, eph = True):
         try:
             keycheck = keys["Keys"][key]
         except Exception as e:
-            em = discord.Embed(color=0xEB2113) #red color
+            em = discord.Embed(color=0xF8A3C8) #light red color
             em.add_field(
                 name="Invalid Key Typed",
                 value=
@@ -489,7 +491,7 @@ async def redeem(ctx, key, eph = True):
             return
         
         if keys["Keys"][key]["Available"] == False:
-            em = discord.Embed(color=0xEB2113) #red color
+            em = discord.Embed(color=0xF8A3C8) #light red color
             if keys["Keys"][key]["Availability"] == 1:
                 em.add_field(
                     name="Unavailable Key",
@@ -521,7 +523,7 @@ async def redeem(ctx, key, eph = True):
             if keys["Keys"][key]["Wallet"] == "Wallet":
                 value = keys["Keys"][key]["Amount"]
                 keys["Users"][str(ctx.author.id)]["Wallet"] += value
-                em = discord.Embed(color=0x00FF90)
+                em = discord.Embed(color=0xA3F8D3)
                 if keys["Keys"][key]["Availability"] == 1:
                     em.add_field(
                         name="Key Redeemed!",
@@ -602,6 +604,7 @@ async def daily(ctx, eph = True):
 @commands.before_invoke(record)
 async def shop(ctx, eph = True):
     try:
+        em = discord.Embed(color=0x87CDAF)
         await ctx.send("We are sorry, the shop isn't yet opened. (Error TTO-122)", ephemeral=eph)
     except Exception as e:
         await ctx.send(f"We are sorry {ctx.author.mention}, but an error occured. I've let the developer know this. (Error TTO-123)", ephemeral=eph)
@@ -620,3 +623,10 @@ async def setup(bot):
   #bot.add_command(gamble)
   bot.add_command(shop)
   bot.add_command(daily)
+  
+if __name__ == "__main__":
+    print("Please, do not start an extension as the starting file, they will always be loaded in the bot.\n-Start main.py instead. We will do it for you.\n-Starting main.py from project directory...\n- (This will only work if you enabled indexing in global settings, case of Visual Basic Studio, or if you use a host provider, e.g. Replit.)")
+    os.system(f"main.py")
+    print("Starting main.py from command line directory...")
+    os.chdir("..")
+    os.system(f"main.py")

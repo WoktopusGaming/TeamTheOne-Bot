@@ -100,16 +100,17 @@ else:
     print("Found one!")
     
 print(" ")
-print("Looking for the Discord and Flask libraries...")
+print("Looking for the Discord, Flask and Quart (on-going replacement) libraries...")
 try:
     import discord
     import flask
+    import quart
 except ImportError:
     a += 1
-    print(f"I did not find one or more of these librairies!\nI will automatically install the latest version of these modules for you!")
+    print(f"I did not find one or more of these librairies!\nI will automatically install the latest version of these modules for you (I'll update pip at the same time)!")
     print("Installing libraries...")
     print(" ")
-    os.system("python.exe -m pip install --upgrade discord flask pip")
+    os.system("python.exe -m pip install --upgrade discord flask quart pip")
 except Exception as e:
     print(f"An error occured.\nPlease report it to the creator using the Issue section of the repository you downloaded it from.\nInclude the traceback with your report. (Error TTO-008)")
     traceback.format_exc(e)

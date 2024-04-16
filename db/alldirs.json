@@ -1,4 +1,9 @@
 {
+  "comment-line1": "This JSON files regroups all temporary file directories and all normal file directories,",
+  "comment-line2": "including subdivided categories depending on utility, e.g. databases and app files. This",
+  "comment-line3": "JSON is used in multiple subprograms of TeamTheOne, to not exclude update.py for updating",
+  "comment-line4": "files, and main.py for extension load, unload and reload, as well as dexer.py for access",
+  "comment-line5": "to any listed file within the web dashboard, under assets app route, and for development help.",
   "temp": {
     "database-directories": [
       "temp.updatelog.json",
@@ -67,6 +72,9 @@
       "main.py"
     ]
   },
+  "bot-extensions": [
+    "ext.economy"
+  ],
   "temp-allinone": [
     "db/temp.updatelog.json",
     "db/temp.alldirs.json",

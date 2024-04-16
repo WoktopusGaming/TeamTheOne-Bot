@@ -6,7 +6,7 @@ import traceback
 import filecmp
 
 def get_vnum():
-    return 1
+    return 1.01
 
 def download_update(default_url, fail_url, tempfilename, filename):
     print(f"Downloading file from repository...")
@@ -24,6 +24,11 @@ def download_update(default_url, fail_url, tempfilename, filename):
         if e.status != 404:
             raise Exception
         print("File from stable release not found. Looking for master branch...")
+        if fail_url == "Beta":
+            print(f"Please open an issue on Github including this:\n")
+            print("Error code TTO-001 - file download failed (Beta, error code 404)")
+            traceback.format_exc(e)
+            return False
         target_url = f"{fail_url}/{filename}"
         print(f"File link: {target_url}")
         data = urllib.request.urlopen(target_url)
@@ -83,15 +88,21 @@ def check_for_updates(vbranch = "stable"):
             elif users["stable-latest-number"] > changelog["stable-latest-number"] and users["stable-latest-version-num"] != changelog["stable-latest-version-num"] and users["stable-latest-version-com"] != changelog["stable-latest-version-com"]:
                 return True
             else:
-                print(f"- Sorry. Your file 'db/changelog.json' got manually overwritten data, or data errors. Please redownload it from\n- https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/updatelog.json\n- to let the process rightfully run. Thank you for your understanding.")
+                os.remove("db/temp.updatelog.json")
+                print(f"- Sorry. Your file 'db/changelog.json' got manually overwritten data, or data errors. Please redownload the repository from\n- https://github.com/WoktopusGaming/TeamTheOne-Bot/\n- for the updater to rightfully run afterwards. Thank you for your understanding.\nError code TTO-004 - file manually edited")
         else:
             if users["beta-latest-number"] == changelog["beta-latest-number"] and users["beta-latest-version-num"] == changelog["beta-latest-version-num"] and users["beta-latest-version-com"] == changelog["beta-latest-version-com"]:
                 os.remove("db/temp.updatelog.json")
                 return False
-            elif users["beta-latest-number"] > changelog["beta-latest-number"] and users["beta-latest-version-num"] != changelog["beta-latest-version-num"] and users["beta-latest-version-com"] != changelog["beta-latest-version-com"]:
+            elif users["beta-latest-number"] > changelog["beta-latest-number"]:
                 return True
+            elif users["beta-latest-number"] < changelog["beta-latest-number"]:
+                print("Skipping update: repository in developer mode.\n- Refer to documentation if you do not know what is developer mode.\n- It is not what you may think.")
+                os.remove("db/temp.updatelog.json")
+                return None
             else:
-                print(f"- Sorry. Your file 'db/changelog.json' got manually overwritten data, or data errors. Please redownload it from\n- https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/updatelog.json\n- to let the process rightfully run. Thank you for your understanding.") 
+                os.remove("db/temp.updatelog.json")
+                print(f"- Sorry. Your file 'db/changelog.json' got manually overwritten data, or data errors. Please redownload the repository from\n- https://github.com/WoktopusGaming/TeamTheOne-Bot/\n- for the updater to rightfully run afterwards. Thank you for your understanding.\nError code TTO-004 - file manually edited (BETA)") 
     except Exception as e:
         print(f"Please open an issue on Github including this:\n")
         print("Error code TTO-003 - update check failed")
@@ -113,7 +124,7 @@ def get_updates(vbranch = "stable"):
         secondary_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
     else:
         default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
-        secondary_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
+        secondary_target_url = f"Beta"
 
     
     for i in range(0, len(alldirs["normal-allinone"]), 1):
@@ -126,4 +137,7 @@ def get_updates(vbranch = "stable"):
                 alldirs = json.load(f)
                 f.close()
         print(" ")
-    
+
+if __name__ == "__main__":
+    print("Please, do not start update.py as the starting file.\nStart main.py instead. We will do it for you.\nStarting main.py...")
+    os.system("main.py")
