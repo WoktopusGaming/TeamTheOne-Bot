@@ -72,15 +72,22 @@ async def update_account(user, users):
                 users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
                 
     for i in users["Keys"]:
-        try:
-            if users["Users"][f"{user.id}"]["Keys"][f"{i}"] != False:
-                pass
-        except KeyError:
+        if str(i) == "KeysNum":
+            pass
+        else:
             try:
-                users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
-            except:
-                users["Users"][f"{user.id}"]["Keys"] = {}
-                users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
+                if users["Users"][f"{user.id}"]["Keys"][f"{i}"] != False:
+                    pass
+            except KeyError:
+                try:
+                    users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
+                except:
+                    users["Users"][f"{user.id}"]["Keys"] = {}
+                    users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
+    
+    for i in users["Users"][f"{user.id}"]["Keys"]:
+        if users["Users"][f"{user.id}"]["Keys"][f"{i}"] == False:
+            del users["Users"][f"{user.id}"]["Keys"][f"{i}"]
     
     return users
     
@@ -195,11 +202,11 @@ async def changelog(ctx, cpage = 0, eph = True):
 
             await ctx.send(f"Hey there! This command now shows the latest changelogs instead of all of them due to a changelog overfill. If you'd like to see a specific changelog, please use the cpage argument when using the command until developers find a workaround. Thank you!\n\- WoktopusGaming, owner/developer.", embed=em, ephemeral=eph)
         else:
-            em = discord.Embed(color=0xF8A3C8)
-            em.add_field(name="Unexisting changelog", value=f"You've put an unexistant changelog number.\nThere is **{number}** registered changelogs up to now.\nUse </changelog:1097887315948470382> cpage:0 to list the last 5 changelog names. (Error TTO-110)")
+            em = discord.Embed(color=0xCD87A6)
+            em.add_field(name="Unexisting changelog", value=f"You've put an unexistant changelog number.\nThere is **{number}** registered changelogs up to now.\nUse </changelog:1097887315948470382> to list the last 5 changelog names. **(Error TTO-110)**")
             await ctx.send(embed=em, ephemeral=eph)
     except Exception as e:
-        await ctx.send('I might have broke myself while retrieving the changelogs... (Error TTO-111)', ephemeral=eph)
+        await ctx.send('I might have broke myself while retrieving the changelogs... **(Error TTO-111)**', ephemeral=eph)
         logging.error(traceback.format_exc())
         
 
@@ -317,26 +324,26 @@ async def gamble(ctx, amt:int, level:int = 0):
 @commands.before_invoke(record)
 async def give(ctx, amt:int, mem:Member):
     try:
-      await open_account(ctx.author)
-      await open_account(mem)
-      users = await get_users_data()
-      earnings = amt
-      if users["Users"][str(ctx.author.id)]["Wallet"] == 0:
-        await ctx.send("Failed to give money: not enough money.")
-        return
-      if users[str(ctx.author.id)]["Wallet"] <= earnings:
-        await ctx.send("Failed to give money: not enough money.")
-        return
-      users["Users"][str(ctx.author.id)]["Wallet"] -= earnings
-      users["Users"][str(mem.id)]["Wallet"] += earnings
-      users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
-      users["Users"][str(mem.id)]["Username"] = mem.name
-      with open("db/users.json", "w") as f:
-        json.dump(users, f, indent="\t")
-      await ctx.send(f"Successfully given {earnings} to {mem.display_name}!")
+        await open_account(ctx.author)
+        await open_account(mem)
+        users = await get_users_data()
+        earnings = amt
+        if users["Users"][str(ctx.author.id)]["Wallet"] == 0:
+            await ctx.send("Failed to give money: not enough money.")
+            return
+        if users["Users"][str(ctx.author.id)]["Wallet"] <= earnings:
+            await ctx.send("Failed to give money: not enough money.")
+            return
+        users["Users"][str(ctx.author.id)]["Wallet"] -= earnings
+        users["Users"][str(mem.id)]["Wallet"] += earnings
+        users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
+        users["Users"][str(mem.id)]["Username"] = mem.name
+        with open("db/users.json", "w") as f:
+            json.dump(users, f, indent="\t")
+        await ctx.send(f"Successfully given {earnings} to {mem.display_name}!")
     except Exception:
-      await ctx.send("I sent my report to the developers. I might have broke the giving machine... (Error TTO-113)")
-      logging.error(traceback.format_exc())
+        await ctx.send("I sent my report to the developers. I might have broke the giving machine... (Error TTO-113)")
+        logging.error(traceback.format_exc())
 
 
 
@@ -352,13 +359,11 @@ async def wallet(ctx, member:Member = commands.parameter(default=lambda ctx: ctx
         users = await get_users_data()
     
         wallet_amt = users["Users"][str(user.id)]["Wallet"]
-        users_amt = users["Users"][str(user.id)]["TTO"]
         users["Users"][str(user.id)]["Username"] = user.name
 
         em = discord.Embed(title=f"{mem.name}'s balance.", color=0x66CAFE)
         em.add_field(name="Multiserver Wallet Balance", value=wallet_amt)
-        em.add_field(name="TeamTheOne Wallet Balance", value=users_amt)
-        await ctx.send(embed=em)
+        await ctx.send(f"Hey there! If you had any TTO coin, we have transferred the amounts to your multi-server wallet, with a rate of 100 coins per TTO coin. Thank you for having used this currency at the first place. We will add more in the future, so stay tuned to updates!\n\- WoktopusGaming, owner / developer", embed=em)
     except Exception as e:
         await ctx.send("I sent my report to the developers. I might have broke the bank system... (Error TTO-114)")
         logging.error(traceback.format_exc())
@@ -387,42 +392,43 @@ async def beg(ctx):
 async def rob(ctx, member:Member):
   await open_account(ctx.author)
   users = await get_users_data()
-  if users["Users"][str(ctx.author.id)]["Wallet"] <= 150:
+  if users["Users"][str(ctx.author.id)]["Wallet"] <= 250:
     await ctx.send("You cannot rob because you're too poor, and everyone wants to run away from you.")
     return 0
-  if users["Users"][str(member.id)]["Wallet"] <= 150:
+  if users["Users"][str(member.id)]["Wallet"] <= 250:
     await ctx.send("You cannot rob a poor, you're crazy?")
     return 0
   num = random.randrange(11)
   if num != 1:
-      coinless = random.randrange(151)
+      coinless = random.randrange(251)
       users["Users"][str(ctx.author.id)]["Wallet"] -= coinless
+      users["Users"][str(member.id)]["Wallet"] += 5
       users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
+      users["Users"][str(member.id)]["Username"] = member.name
       with open("db/users.json", "w") as f:
         json.dump(users, f, indent="\t")
       await ctx.send(f"Bad luck! {member.display_name} saw you trying to rob his money! He thought you robbed already, so you apologized and lost {coinless} coins.")
       return 0
   else:
-    coinless = random.randrange(151)
-    users["Users"][str(ctx.author.id)]["Wallet"] += coinless
+    coinless = random.randrange(251)
+    users["Users"][str(ctx.author.id)]["Wallet"] += coinless * 5
     users["Users"][str(member.id)]["Wallet"] -= coinless
     users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
     users["Users"][str(member.id)]["Username"] = member.name
     with open("db/users.json", "w") as f:
       json.dump(users, f, indent="\t")
-    await ctx.send(f"You successfully robbed {member.display_name} and won {coinless}.")
+    await ctx.send(f"You successfully robbed {member.display_name} and won {coinless * 5}.")
 
 
 ascup = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
 
 @commands.hybrid_command(brief="Generates up to 5 codes giving the same reward.", with_app_command = True)
-@discord.app_commands.describe(amount = "How many codes to generate", hidemsg = "Hides message from others (send ephemeral)", strnum="Determines how many characters the code(s) must contain", keytype="Determines the reward of reedeming this code", value="Depending on choosen type, defines the value behind the code.", availabletype="Determines the availability of the code")
+@discord.app_commands.describe(amount = "Number of codes to generate - maximum 5", hidemsg = "Hides message from others on success (send ephemeral)", strnum="Determines how many characters the code(s) must contain - minimum 4, maximum 20", keytype="Determines the reward of reedeming this code (leave blank for now)", value="Depending on choosen type, defines the value behind the code - 0 sets it randomly", availabletype="Determines the availability of the code - 1 is one-time key, 2 needs a manual disable")
 @commands.guild_only()
 @commands.is_owner()
 @commands.before_invoke(record)
 # "Multiserver Coins" is keytype 1
-# "TTO Coins" is keytype 2
 # 
 # "One-time reach (first redeemed first gotten)" is availabletype 1
 # "Forever reaches" is availabletype 2
@@ -443,7 +449,7 @@ async def gen(ctx, amount = 1, hidemsg = True, strnum = 8, keytype = 1, value = 
         normal = "Keys:"
         for x in key_amt:
             key = "".join(random.choices(ascup + digits, k=num))
-            keys["KeysNum"] += 1
+            keys["Keys"]["KeysNum"] += 1
             keys["Keys"][key] = {}
             keys["Keys"][key]["Available"] = True
             keys["Keys"][key]["Availability"] = availabletype
@@ -453,18 +459,12 @@ async def gen(ctx, amount = 1, hidemsg = True, strnum = 8, keytype = 1, value = 
                 else:
                     keys["Keys"][key]["Amount"] = value
                 keys["Keys"][key]["Wallet"] = "Wallet"
-            elif keytype == 2:
-                if value == 0 or value >= 401:
-                    keys["Keys"][key]["Amount"] = random.randrange(10, 400)
-                else:
-                    keys["Keys"][key]["Amount"] = value
-                keys["Keys"][key]["Wallet"] = "TTO"
             normal += f'\n- \"{key}\"'
         await ctx.send(normal, ephemeral=hidemsg)
         with open("db/users.json", 'w') as f:
             json.dump(keys, f, indent="\t")
     except Exception as e:
-        await ctx.send('While generating codes, I might have lost the keys... (Error TTO-115)')
+        await ctx.send('While generating codes, I might have lost the keys for access to vault... (Error TTO-115)')
         await logging.error(traceback.format_exc())
 
 
@@ -481,7 +481,7 @@ async def redeem(ctx, key, eph = True):
         try:
             keycheck = keys["Keys"][key]
         except Exception as e:
-            em = discord.Embed(color=0xF8A3C8) #light red color
+            em = discord.Embed(color=0xCD87A6) #light red color
             em.add_field(
                 name="Invalid Key Typed",
                 value=
@@ -491,7 +491,7 @@ async def redeem(ctx, key, eph = True):
             return
         
         if keys["Keys"][key]["Available"] == False:
-            em = discord.Embed(color=0xF8A3C8) #light red color
+            em = discord.Embed(color=0xCD87A6) #light red color
             if keys["Keys"][key]["Availability"] == 1:
                 em.add_field(
                     name="Unavailable Key",
@@ -523,7 +523,7 @@ async def redeem(ctx, key, eph = True):
             if keys["Keys"][key]["Wallet"] == "Wallet":
                 value = keys["Keys"][key]["Amount"]
                 keys["Users"][str(ctx.author.id)]["Wallet"] += value
-                em = discord.Embed(color=0xA3F8D3)
+                em = discord.Embed(color=0x87CDAF)
                 if keys["Keys"][key]["Availability"] == 1:
                     em.add_field(
                         name="Key Redeemed!",
@@ -572,7 +572,7 @@ async def daily(ctx, eph = True):
             else:
                 streak = 0
                 users["Users"][str(ctx.author.id)]["Streaks"]["Daily"] = 0
-            daily = random.randrange(500)
+            daily = random.randrange(750)
             streakth = streak * 0.5
             
             if streakth == 0:
@@ -600,14 +600,17 @@ async def daily(ctx, eph = True):
 
 @discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
 @commands.hybrid_group(fallback="view")
-@commands.guild_only()
 @commands.before_invoke(record)
 async def shop(ctx, eph = True):
     try:
-        em = discord.Embed(color=0x87CDAF)
-        await ctx.send("We are sorry, the shop isn't yet opened. (Error TTO-122)", ephemeral=eph)
+        em = discord.Embed(color=0x66CAFE)
+        em.add_field(
+            name="Shop",
+            value="We, as in our group coding this project, are sorry to announce the shop still unopened and in works. Would be a pleasure if you could come back later... We are sorry."
+        )
+        await ctx.send(embed=em, ephemeral=eph)
     except Exception as e:
-        await ctx.send(f"We are sorry {ctx.author.mention}, but an error occured. I've let the developer know this. (Error TTO-123)", ephemeral=eph)
+        await ctx.send(f"We are sorry {ctx.author.mention}, but an error occured. I've let the host know this. (Error TTO-123)", ephemeral=eph)
         await logging.error(traceback.format_exc())
 
 

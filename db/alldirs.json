@@ -32,7 +32,8 @@
     "gitrepo-files": [
       "temp.LICENSE",
       "temp.gitattributes",
-      "temp.gitignore"
+      "temp.gitignore",
+      "temp.devs_changelog.md"
     ],
     "appfiles": [
       "temp.main.py"
@@ -66,7 +67,8 @@
     "gitrepo-files": [
       "LICENSE",
       ".gitattributes",
-      ".gitignore"
+      ".gitignore",
+      "devs_changelog.md"
     ],
     "appfiles": [
       "main.py"
@@ -89,6 +91,7 @@
     "temp.LICENSE",
     "temp.gitattributes",
     "temp.gitignore",
+    "temp.devs_changelog.md",
     "temp.main.py"
   ],
   "normal-allinone": [
@@ -105,6 +108,7 @@
     "LICENSE",
     ".gitattributes",
     ".gitignore",
+    "devs_changelog.md",
     "main.py"
   ]
 }

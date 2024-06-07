@@ -61,7 +61,7 @@ logger.addHandler(handles)
 # vnum section
 
 def get_vnum():
-    return 12
+    return 12.01
 
 def get_vbranch():
     return "Beta"
@@ -69,8 +69,8 @@ def get_vbranch():
 # end separation
 
 # note to self:
-# 0xA3F8D3 = Light Green / Neo Mint - succesful embeds
-# 0xF8A3C8 = Light Red / Pastel Magenta - error embeds
+# 0x87CDAF = Light Green / Seaborn - succesful embeds
+# 0xCD87A6 = Light Red / Pastel Magenta - error embeds
 # 0x66CAFE = Light Blue / Blue Mana - info or TTO embeds (funny cafe)
 # found colors with https://colorkit.co/color/
 
@@ -91,6 +91,7 @@ changelog = json.load(changelogreq)
 main_version = get_vnum()
 main_branch = get_vbranch()
 update_version = update.get_vnum()
+devmode = 0
 
 if update_version < changelog["stable-updpy"]:
     with open("temp.update.py", "w") as f:
@@ -238,13 +239,15 @@ except Exception as e:
 async def on_ready():
     print("Bot is online and ready as", format("TeamTheOne Bot"))
     await bot.change_presence(
-        activity=discord.Activity(type=discord.ActivityType.playing,
-                                  name="on BETA v2.2.0 | TTO"))
+        activity=discord.Activity(
+            type=discord.ActivityType.playing, 
+            name="on BETA v2.2.0 | TTO"
+            )
+        )
 
-    try:
-        await bot.load_extension("ext.economy")
-    except discord.ExtensionAlreadyLoaded:
-        pass
+    alldirs = json.load(open("db/alldirs.json"))
+    for i in range(0, len(alldirs["bot-extensions"]), 1):
+        await bot.load_extension(alldirs["bot-extensions"][i])
         
     await bot.tree.sync()
     logger.info("Bot set up and running")
@@ -256,7 +259,7 @@ async def on_command_error(ctx, error):
     logger.debug(
         f"Error {error} happened using /{ctx.command} as {ctx.author.name}.")
     if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(colour=0xF8A3C8)  #light red color
+        em = discord.Embed(color=0xCD87A6) #light red color
         em.add_field(
             name="Whoa! Slow down!",
             value=
@@ -265,7 +268,7 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=em, delete_after=10)
         return 0
     if isinstance(error, commands.MissingPermissions):
-        em = discord.Embed(color=0xF8A3C8) #light red color
+        em = discord.Embed(color=0xCD87A6) #light red color
         em.add_field(
             name="I don't really recognize you...",
             value=
@@ -274,7 +277,7 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=em, delete_after=10)
         return 0
     if isinstance(error, commands.NotOwner):
-        em = discord.Embed(color=0xF8A3C8) #light red color
+        em = discord.Embed(color=0xCD87A6) #light red color
         em.add_field(
             name="Don't surpass to my owner!",
             value=
@@ -282,7 +285,7 @@ async def on_command_error(ctx, error):
         )
         await ctx.send(embed=em, delete_after=10)
     if isinstance(error, commands.NoPrivateMessage):
-        em = discord.Embed(color=0xF8A3C8) #light red color
+        em = discord.Embed(color=0xCD87A6) #light red color
         em.add_field(
             name="Hey! Discord blocked me!",
             value=
@@ -325,15 +328,15 @@ async def reload(ctx, ext):
         if ext == "all":
             alldirs = json.load(open("db/alldirs.json"))
             for i in range(0, len(alldirs["bot-extensions"]), 1):
-                await bot.reload_extension(i)
-            em = discord.Embed(color=0xA3F8D3)
+                await bot.reload_extension(alldirs["bot-extensions"][i])
+            em = discord.Embed(color=0x87CDAF)
             em.add_field(name="Reloaded all extensions",
                          value=f"We successfully reloaded all extensions!")
             await ctx.send(embed=em, ephemeral=True)
             await bot.tree.sync()
             return 0
         await bot.reload_extension(ext)
-        em = discord.Embed(color=0xA3F8D3)
+        em = discord.Embed(color=0x87CDAF)
         em.add_field(name="Reloaded extension",
                      value=f'We reloaded this extension successfully: \"{ext}\".')
         await ctx.send(embed=em, ephemeral=True)
