@@ -1,21 +1,25 @@
 # Changelog
 
-All notable changes to this project will be documented in this file for easy read for developers.
+All notable changes will be documented in this file for easy read for developers.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-This changelog is based on the changelogs collectively regrouped in `/db/updatelog.json`, but not all changes are made after open-sourcing of the bot.
-Most updates were also made the same day as another one, because I didn't know about Semantic Versioning at that time and I just added another update to changelog everytime I changed something.
-Hope all of that won't get you lost, though.
+### **Disclaimer**
+*This changelog is based on the changelogs collectively regrouped in `/db/updatelog.json`,
+but not all changes are made after open-sourcing of the bot.
+Most updates were also made the same day as another one,
+because I didn't know about Semantic Versioning at that time,
+and I just added another update to changelog everytime I changed something.
+Hope all of that won't get you lost, though.*
 
 ## [Unreleased]
 
 ### Added
 
-- Developer functionality: bot auto-update (adding and changing files only, working on file removal)
+- Developer functionality: bot auto-update (adding and changing files only, or for now)
 - Developer functionality: developer mode (skip any update change or file deletion processes, e.g. `startup.py`)
-- Host functionality: main process restart upon server disconnection (startup only)
+- Host functionality: main.py auto-restart upon server disconnection (startup only)
 
 ### Changed
 
@@ -29,7 +33,8 @@ Hope all of that won't get you lost, though.
 
 ### Fixed
 
-- TBA
+- Activity status not loading (for some confusing reason)
+- Continuation of the discriminator removal (accidental remains)
 
 ## [2.1.0] - 2023-07-07
 
