@@ -155,3 +155,7 @@ Hope all of that won't get you lost, though.*
 ### Changed
 
 - Command organisation and bot improvement (made extensions for easy reloading)
+
+## [0.1.0] - 2022-09-16
+
+Basically the first version of the bot... there wasn't much improvement nor changelog at the time, so I'd be buggered if I remembered any change before that.
