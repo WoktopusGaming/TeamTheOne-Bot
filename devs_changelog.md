@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### **Disclaimer**
-*This changelog is based on the changelogs collectively regrouped in `/db/updatelog.json`,
+*This changelog is based on the changelogs collectively regrouped in `db/updatelog.json`,
 but not all changes are made after open-sourcing of the bot.
 Most updates were also made the same day as another one,
 because I didn't know about Semantic Versioning at that time,
@@ -14,6 +14,9 @@ and I just added another update to changelog everytime I changed something.
 Hope all of that won't get you lost, though.*
 
 ## [Unreleased]
+
+v2.2.0, eh
+This release is Beta; if you put your updater to recieve Beta updates  you'll recieve every change of this Unreleased version (current Github version, based on commits given time to time).
 
 ### Added
 
