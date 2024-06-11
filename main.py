@@ -61,7 +61,7 @@ logger.addHandler(handles)
 # vnum section
 
 def get_vnum():
-    return 12.01
+    return 11.02
 
 def get_vbranch():
     return "Beta"
