@@ -17,7 +17,7 @@ Hope all of that won't get you lost, though.*
 
 v2.2.0, eh
 
-This release is Beta; if you put your updater to recieve Beta updates  you'll recieve every change of this Unreleased version (current Github version, based on commits given time to time).
+This release is Beta; if you put your updater to recieve Beta updates, you will recieve every code change of this unreleased version (current Github version, based on commits given time to time).
 
 ### Added
 
