@@ -90,10 +90,10 @@ logger.addHandler(handles)
 # version section
 
 def get_vnum():
-    return 12
+    return 11.04
 
 def get_vbranch():
-    return "stable"
+    return "Beta"
 
 # end separation
 

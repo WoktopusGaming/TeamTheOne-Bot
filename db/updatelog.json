@@ -1,11 +1,11 @@
 {
 	"changelog-separpt": 6,
-	"stable-updpy": 1.01,
-	"stable-updpy-userversion": "v1.0.1",
-	"stable-latest-number": 12,
-	"stable-latest-version-num": "v2.2.0",
-	"stable-latest-version-com": "v2024.06.14",
-	"beta-latest-number": 12,
+	"stable-updpy": 1.02,
+	"stable-updpy-userversion": "v1.0.2",
+	"stable-latest-number": 11,
+	"stable-latest-version-num": "v2.1.0",
+	"stable-latest-version-com": "v2023.07.07",
+	"beta-latest-number": 11.04,
 	"beta-latest-version-num": "v2.2.0",
 	"beta-latest-version-com": "v2024.06.14",
 	"Changelogs": {

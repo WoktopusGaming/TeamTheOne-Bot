@@ -178,7 +178,7 @@ async def changelog(ctx, cpage = 0, eph = True):
         em = discord.Embed(color=0x66CAFE)
         em.add_field(name="Changelog", value=changelog['Changelogs'][str(cpage)]['Detailed Changelog'])
         em.add_field(name="Versions", value=f"- {changelog['Changelogs'][str(cpage)]['Compact Version']}\n- {changelog['Changelogs'][str(cpage)]['Second Version Number']}")
-        em.add_field(name="Version Name and Number", value=f'- {changelog["Changelogs"][str(cpage)]["Version Name"]}\n- Changelog N°{changelog["Changelogs"][str(cpage)]["Number"]}')
+        em.add_field(name="Version Name and Number", value=f'- {changelog["Changelogs"][str(cpage)]["Version Name"]}\n- Changelog #{changelog["Changelogs"][str(cpage)]["Number"]}')
         await ctx.send(embed=em, ephemeral=eph)
     except KeyError:
         if cpage == 0:
@@ -193,7 +193,7 @@ async def changelog(ctx, cpage = 0, eph = True):
                 else:
                     versions += f"- {changelog['Changelogs'][str(i)]['Compact Version']} / {changelog['Changelogs'][str(i)]['Second Version Number']}\n"
                     versionnames += f'- {changelog["Changelogs"][str(i)]["Version Name"]}\n'
-                    changelognumbers += f"- Changelog N°**{changelog['Changelogs'][str(i)]['Number']}**\n"
+                    changelognumbers += f"- Changelog #**{changelog['Changelogs'][str(i)]['Number']}**\n"
                 
             em.add_field(name="All changelogs versions", value=versions)
             em.add_field(name="All changelogs names", value=versionnames)

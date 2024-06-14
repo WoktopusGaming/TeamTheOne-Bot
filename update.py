@@ -6,7 +6,7 @@ import traceback
 import filecmp
 
 def get_vnum():
-    return 1.01
+    return 1.02
 
 def download_update(default_url, fail_url, tempfilename, filename):
     print(f"Downloading file from repository...")
@@ -27,7 +27,7 @@ def download_update(default_url, fail_url, tempfilename, filename):
         if fail_url == "Beta":
             print(f"Please open an issue on Github including this:\n")
             print("Error code TTO-001 - file download failed (Beta, error code 404)")
-            traceback.format_exc(e)
+            traceback.format_exc()
             return False
         target_url = f"{fail_url}/{filename}"
         print(f"File link: {target_url}")
@@ -38,10 +38,20 @@ def download_update(default_url, fail_url, tempfilename, filename):
                 f.write(line.decode("utf-8"))
   
         return True
+    except FileNotFoundError:
+        mdir = tempfilename.rsplit("/", 1)
+        os.makedirs(f"{mdir[0]}")
+
+        target_url = f"{default_url}/{filename}"
+        data = urllib.request.urlopen(target_url)
+    
+        with open(f"{tempfilename}", "w") as f:
+            for line in data:
+                f.write(line.decode("utf-8"))
     except Exception as e:
         print(f"Please open an issue on Github including this:\n")
         print("Error code TTO-001 - file download failed")
-        traceback.format_exc(e)
+        traceback.format_exc()
         return False
         
 
@@ -63,7 +73,7 @@ def comparison_check(tempfilename, filename):
     except Exception as e:
         print(f"Please open an issue on Github including this:\n")
         print("Error code TTO-002 - file comparison failed")
-        traceback.format_exc(e)
+        traceback.format_exc()
         return False
 
 def check_for_updates(vbranch = "stable"):
@@ -106,23 +116,24 @@ def check_for_updates(vbranch = "stable"):
     except Exception as e:
         print(f"Please open an issue on Github including this:\n")
         print("Error code TTO-003 - update check failed")
-        traceback.format_exc(e)
+        traceback.format_exc()
         return False
     
 
     
 def get_updates(vbranch = "stable"):
     oldupd = 0
+    
+    with open("db/temp.updatelog.json") as f:
+        changelog = json.load(f)
+        f.close()
+
     if vbranch != "Beta":
         default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/{changelog['stable-latest-version-num']}/{changelog['stable-latest-version-com']}"
         secondary_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
     else:
         default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
         secondary_target_url = f"Beta"
-
-    with open("db/temp.updatelog.json") as f:
-        changelog = json.load(f)
-        f.close()
     
     try:
         with open("db/alldirs.json") as f:
@@ -134,10 +145,11 @@ def get_updates(vbranch = "stable"):
         comparison_check("db/temp.alldirs.json", "db/alldirs.json")
         print(" ")
         oldupd = 1
+        with open("db/alldirs.json") as f:
+            alldirs = json.load(f)
+            f.close()
     
     for i in range(0, len(alldirs["normal-allinone"]), 1):
-        if oldupd == 1:
-            i += 1
         print(alldirs["normal-allinone"][i])
 
         if alldirs["normal-allinone"][i] != "db/updatelog.json":

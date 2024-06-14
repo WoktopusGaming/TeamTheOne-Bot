@@ -24,11 +24,12 @@ If you don't know how to do that, just... check the documentation (TBA).
 ### Added
 
 - Developer functionality: bot auto-update with `update.py` (adding and changing files only, or for now)
+ - Note: updater available pre-v2.1 to v2.2 and higher: check documentation for more info (I NEED TO MAKE IT DAMNIT, I MENTION IT TOO MUCH-)
 - Developer functionality: developer mode (skip any update change or file deletion processes, e.g. `startup.py`, process covered in documentation)
 - Host functionality: main.py auto-restart upon missing Internet connection (only on startup)
 - New log file: `fulldiscord.log`: registers all events, even DEBUG, to include Discord module action log
 - New command log level: `CDEBUG`, for command debug objects (only appears in log files)
-- New database: `alldirs.json`: contains all types of files and all their directories (useful for updates)
+- New database: `alldirs.json`: contains all types of file paths (useful for updates)
 
 ### Changed
 
