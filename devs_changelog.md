@@ -19,26 +19,37 @@ v2.2.0, eh
 
 This release is Beta; if you put your updater to recieve Beta updates, you will recieve every code change of this unreleased version (current Github version, based on commits given time to time).
 
+If you don't know how to do that, just... check the documentation (TBA).
+
 ### Added
 
 - Developer functionality: bot auto-update (adding and changing files only, or for now)
-- Developer functionality: developer mode (skip any update change or file deletion processes, e.g. `startup.py`)
-- Host functionality: main.py auto-restart upon server disconnection (startup only)
+- Developer functionality: developer mode (skip any update change or file deletion processes, e.g. `startup.py`, process covered in documentation)
+- Host functionality: main.py auto-restart upon missing Internet connection (only on startup)
+- New log file: `fulldiscord.log`: registers all events, even DEBUG, to include Discord module action log
+- New command log level: `CDEBUG`, for command debug objects (only appears in log files)
 
 ### Changed
 
-- Embed colours on Discord: error messages, success messages and info messages now differ within a three-colour palette shown in `main.py`, lines 72 to 74 (exception: some commands)
-- Database system: automatically deletes unredeemed keys from user data
+- Embed colours on Discord: error messages, success messages and info messages now differ within a three-colour palette shown in `main.py`, lines 100 to 104 (exception: some commands)
+- Database system: automatically deletes unredeemed keys from separate user data (database cleanup system)
 - Economy extension: removed any usage of the TeamTheOne coins wallet
+- `/ban`: Tries to message banned user before ban, now responds in embeds in same channel (Dyno-like concept)
+- Main log file `discord.log` now supports `CDEBUG`, a command return separate action log (multi-update change)
+
+### Deprecated
+
+- Nothing here, yet... ***only yet...***
 
 ### Removed
 
 - TeamTheOne coins wallet from all economy extension commands
+- Comments at the end of every single line of code (seemed to me like that)
 
 ### Fixed
 
 - Activity status not loading (for some confusing reason)
-- Continuation of the discriminator removal (accidental remains)
+- Continuation of the discriminator removal (accidentally left remains)
 
 ## [2.1.0] - 2023-07-07
 
@@ -162,4 +173,4 @@ This release is Beta; if you put your updater to recieve Beta updates, you will 
 
 ## [0.1.0] - 2022-09-16
 
-Basically the first version of the bot... there wasn't much improvement nor changelog at the time, so I'd be buggered if I remembered any change before that.
+Basically the first version of the bot... there wasn't much improvement nor changelog at the time, so I'd be buggered if I remembered any change before that. Sorry!

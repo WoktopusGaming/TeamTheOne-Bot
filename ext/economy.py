@@ -163,7 +163,6 @@ async def open_account(user):
 
     return True
 
-
 @discord.app_commands.describe(cpage = "Chooses the changelog page in the catalog. 0 shows all changelogs's other specifications.", eph = "Checks if you want it ephemeral or not. True by default.")
 @commands.hybrid_command(brief="Shows up the changelog")
 @commands.before_invoke(record)
@@ -189,7 +188,7 @@ async def changelog(ctx, cpage = 0, eph = True):
             em = discord.Embed(color=0x66CAFE)
 
             for i in changelog["Changelogs"]:
-                if int(i) <= changelog["changelog-startpoint"]:
+                if int(i) <= changelog["changelog-separpt"]:
                     pass
                 else:
                     versions += f"- {changelog['Changelogs'][str(i)]['Compact Version']} / {changelog['Changelogs'][str(i)]['Second Version Number']}\n"
@@ -207,8 +206,7 @@ async def changelog(ctx, cpage = 0, eph = True):
             await ctx.send(embed=em, ephemeral=eph)
     except Exception as e:
         await ctx.send('I might have broke myself while retrieving the changelogs... **(Error TTO-111)**', ephemeral=eph)
-        logging.error(traceback.format_exc())
-        
+        logging.error(traceback.format_exc())   
 
 @discord.app_commands.describe(amt = "Amount of money to gamble", level = "(Optionnal) Sets the reward level, default is 0 (auto).")
 @commands.hybrid_command()
@@ -318,7 +316,6 @@ async def gamble(ctx, amt:int, level:int = 0):
     await ctx.send("I sent my report to the developers. I might have broke the casino machine... Make sure to have an account open using </wallet:1066510029299134569>. (Error TTO-112 (deprecated, no Github support will be given))")
     logging.error(traceback.format_exc())
 
-
 @commands.hybrid_command()
 @commands.guild_only()
 @commands.before_invoke(record)
@@ -345,8 +342,6 @@ async def give(ctx, amt:int, mem:Member):
         await ctx.send("I sent my report to the developers. I might have broke the giving machine... (Error TTO-113)")
         logging.error(traceback.format_exc())
 
-
-
 @commands.hybrid_command(brief="Check how many money you have.")
 @commands.before_invoke(record)
 async def wallet(ctx, member:Member = commands.parameter(default=lambda ctx: ctx.author)):
@@ -368,8 +363,6 @@ async def wallet(ctx, member:Member = commands.parameter(default=lambda ctx: ctx
         await ctx.send("I sent my report to the developers. I might have broke the bank system... (Error TTO-114)")
         logging.error(traceback.format_exc())
 
-
-
 @discord.ext.commands.cooldown(1, 15, commands.BucketType.user)
 @commands.hybrid_command(brief="Begs someone to give you money.")
 @commands.guild_only()
@@ -384,7 +377,6 @@ async def beg(ctx):
     with open("db/users.json", 'w') as f:
         json.dump(users, f, indent="\t")
     await ctx.send(f"Someone gave you {earnings} coins! You added them to your multiserver wallet.")
-      
 
 @commands.hybrid_command()
 @commands.guild_only()
@@ -419,10 +411,8 @@ async def rob(ctx, member:Member):
       json.dump(users, f, indent="\t")
     await ctx.send(f"You successfully robbed {member.display_name} and won {coinless * 5}.")
 
-
 ascup = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-
 @commands.hybrid_command(brief="Generates up to 5 codes giving the same reward.", with_app_command = True)
 @discord.app_commands.describe(amount = "Number of codes to generate - maximum 5", hidemsg = "Hides message from others on success (send ephemeral)", strnum="Determines how many characters the code(s) must contain - minimum 4, maximum 20", keytype="Determines the reward of reedeming this code (leave blank for now)", value="Depending on choosen type, defines the value behind the code - 0 sets it randomly", availabletype="Determines the availability of the code - 1 is one-time key, 2 needs a manual disable")
 @commands.guild_only()
@@ -466,8 +456,6 @@ async def gen(ctx, amount = 1, hidemsg = True, strnum = 8, keytype = 1, value = 
     except Exception as e:
         await ctx.send('While generating codes, I might have lost the keys for access to vault... (Error TTO-115)')
         await logging.error(traceback.format_exc())
-
-
 
 @discord.app_commands.describe(key = "The key to redeem", eph = "Checks if you want it ephemeral or not")
 @commands.hybrid_command(brief="Redeem your codes you found out using this command")
@@ -544,11 +532,9 @@ async def redeem(ctx, key, eph = True):
     except Exception as e:
         await ctx.send('While searching codes, I might have lost the keys to access the code database... (Error TTO-120)')
         await logging.error(traceback.format_exc())
-  
 
-
-@discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
 @commands.hybrid_command()
+@discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
 @commands.before_invoke(record)
 async def daily(ctx, eph = True):
     try:
@@ -598,10 +584,25 @@ async def daily(ctx, eph = True):
         await ctx.send(f"I am sorry but for an unknown reason I can't retrieve something... (Error TTO-121)", ephemeral=eph)
         await logging.error(traceback.format_exc())
 
+@commands.hybrid_group(name="shop", fallback="view", brief="View the current shop!")
 @discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
-@commands.hybrid_group(fallback="view")
 @commands.before_invoke(record)
-async def shop(ctx, eph = True):
+async def shop_view(ctx, eph = True):
+    try:
+        em = discord.Embed(color=0x66CAFE)
+        em.add_field(
+            name="Shop",
+            value="We, as in our group coding this project, are sorry to announce the shop still unopened and in works. Would be a pleasure if you could come back later... We are sorry."
+        )
+        await ctx.send(embed=em, ephemeral=eph)
+    except Exception as e:
+        await ctx.send(f"We are sorry {ctx.author.mention}, but an error occured. I've let the host know this. (Error TTO-123)", ephemeral=eph)
+        await logging.error(traceback.format_exc())
+
+@shop_view.command(name="add", brief="Add an item to the shop.")
+@discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
+@commands.before_invoke(record)
+async def shop_add(ctx, eph = True):
     try:
         em = discord.Embed(color=0x66CAFE)
         em.add_field(
@@ -623,9 +624,10 @@ async def setup(bot):
   bot.add_command(wallet)
   bot.add_command(rob)
   bot.add_command(give)
-  #bot.add_command(gamble)
-  bot.add_command(shop)
   bot.add_command(daily)
+  #bot.add_command(gamble)
+
+  bot.add_command(shop_view) # adds the whole shop group
   
 if __name__ == "__main__":
     print("Please, do not start an extension as the starting file, they will always be loaded in the bot.\n-Start main.py instead. We will do it for you.\n-Starting main.py from project directory...\n- (This will only work if you enabled indexing in global settings, case of Visual Basic Studio, or if you use a host provider, e.g. Replit.)")

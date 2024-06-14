@@ -1,67 +1,96 @@
-# This code is based on the following example:
+# This code used to be based on the following example:
 # https://discordpy.readthedocs.io/en/stable/quickstart.html#a-minimal-bot
-import asyncio # imports the asynchronized module
-import urllib.request # imports the URL request from the URL library
-import discord # imports the discord library
-import logging # imports the logging module
-import os # imports the operating system module
-import traceback # imports the traceback module
-import logging.handlers # imports the logging handlers
-import time # imports the time library
-import sys # imports the system library
-import json # imports the json library
-import filecmp # imports the file comparison library
+# before going its own way, yet using the documentation
 
-import socket # imports the socket library
-import aiohttp # imports the aiohttp library
+# I'm planning on working on the documentation, so you don't have to look at the whole code
+# I removed comments at the end of each single line, I'm sorry
+# - WoktopusGaming, aka Etchy / Echazarel
+
+import aiohttp
+import asyncio
+import discord
+import filecmp
+import json
+import logging
+import os
+import sys
+import time
+import traceback
+
+import logging.handlers
+import urllib.request
+
+from discord import Member
+from discord.ext import commands
+#"from discord.ext import tasks" # ignore
+#"from pretty_help import AppMenu, PrettyHelp" # ignore
 
 try:
-    from dexer import dexer # imports the dexer function from dexer.py (dashboard module)
+    from dexer import dexer
 except ModuleNotFoundError or NameError:
     pass
 except Exception as e:
     traceback.format_exc(e)
 
 try:
-    import update # imports the whole update.py file (update and checking module)
+    import update
     updateoop = 0
 except ModuleNotFoundError or NameError:
     updateoop = 1
 except Exception as e:
     traceback.format_exc(e)
 
-from discord import Member # imports the Member class from discord library (used as a shortcut in code)
-from discord.ext import commands # imports the commands module from discord's extended library
-from discord.ext import tasks # imports the tasks module from discord's extended library
-from discord import app_commands # imports the app_commands library from discord library
-#"from pretty_help import AppMenu, PrettyHelp" # ignore
+logger = logging.getLogger('discord')
 
-logger = logging.getLogger('discord') # gets logger "discord" (basic logger from discord library)
-logger.setLevel(logging.INFO) # sets console information level to "info"
-logging.getLogger('discord.http').setLevel(logging.INFO) # gets the HTTP logger from discord library with level "info"
+logging.CDEBUG = 15
+logging.addLevelName(logging.CDEBUG, "CDEBUG")
+
+def cdebug(self, message, *args, **kws):
+    if self.isEnabledFor(logging.CDEBUG):
+        self._log(logging.CDEBUG, message, args, **kws)
+
+logging.Logger.cdebug = cdebug
+
+logger.setLevel(logging.DEBUG)
+logging.getLogger('discord.http').setLevel(logging.INFO)
 
 handler = logging.handlers.RotatingFileHandler(
     filename='discord.log',
     encoding='utf-8',
-    maxBytes=50 * 1024 * 1024,  # 50 MiB
-    backupCount=5,  # Rotate through 5 files before stopping
+    maxBytes=2 * 1024 * 1024,
+    backupCount=5
 )
+handler.setLevel(logging.CDEBUG)
+
 dt_fmt = '%Y-%m-%d %H:%M:%S'
-formatter = logging.Formatter('[{asctime}] [{levelname:<8}] {name}: {message}',
-                              dt_fmt,
-                              style='{')
+formatter = logging.Formatter(
+    '[{asctime}] [{levelname:<8}] {name}: {message}',
+    dt_fmt,
+    style='{'
+)
+
 handler.setFormatter(formatter)
 logger.addHandler(handler)
+
+handlee = logging.handlers.RotatingFileHandler(
+    filename='fulldiscord.log',
+    encoding='utf-8',
+    maxBytes=10 * 1024 * 1024,
+    backupCount=3
+)
+handlee.setLevel(logging.DEBUG)
+handlee.setFormatter(formatter)
+logger.addHandler(handlee)
 
 handles = logging.StreamHandler(sys.stdout)
 handles.setLevel(logging.INFO)
 handles.setFormatter(formatter)
 logger.addHandler(handles)
 
-# vnum section
+# version section
 
 def get_vnum():
-    return 11.02
+    return 11.03
 
 def get_vbranch():
     return "Beta"
@@ -122,7 +151,7 @@ if updateoop != 1:
     elif upd == True:
         if main_branch == "Beta":
                 logger.info("An update was found for the Beta version. Installing update...")
-                logger.warn(f"WARNING: Beta versions are unstable, and any change will be installed and will overwrite any current file! It is recommended you use a stable version instead! Ignore if you are aware of the consequences this could give with your clients. If you do not want this to be shown again, you can add a # at the start of lines 117 and 118 in main.py, needing to be readded every time the update happens. If you are fine with overwriting any file, press any letter then Enter. If you are not, please type \"exit\" then Enter. Thank you for your understanding.")
+                logger.warn(f"WARNING: Beta versions are unstable, and any change will be installed and will overwrite any current file! It is recommended you use a stable version instead! Ignore if you are aware of the consequences this could give with your clients. If you do not want this to be shown again, you can add a # at the start of lines 147 and 148 in main.py, needing to be readded every time the update happens. If you are fine with overwriting any file, press any letter then Enter. If you are not, please type \"exit\" then Enter. Thank you for your understanding.")
                 upd_exit = input()
                 try:
                     if upd_exit == "exit":
@@ -229,7 +258,7 @@ async def record(ctx):
 #end separation
 
 try:
-    dexer() # runs the dexer function (runs the dashboard)
+    dexer()
 except NameError:
     pass
 except Exception as e:
@@ -259,7 +288,7 @@ async def on_command_error(ctx, error):
     logger.debug(
         f"Error {error} happened using /{ctx.command} as {ctx.author.name}.")
     if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(color=0xCD87A6) #light red color
+        em = discord.Embed(color=0xCD87A6)
         em.add_field(
             name="Whoa! Slow down!",
             value=
@@ -268,7 +297,7 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=em, delete_after=10)
         return 0
     if isinstance(error, commands.MissingPermissions):
-        em = discord.Embed(color=0xCD87A6) #light red color
+        em = discord.Embed(color=0xCD87A6)
         em.add_field(
             name="I don't really recognize you...",
             value=
@@ -277,7 +306,7 @@ async def on_command_error(ctx, error):
         await ctx.send(embed=em, delete_after=10)
         return 0
     if isinstance(error, commands.NotOwner):
-        em = discord.Embed(color=0xCD87A6) #light red color
+        em = discord.Embed(color=0xCD87A6)
         em.add_field(
             name="Don't surpass to my owner!",
             value=
@@ -285,7 +314,7 @@ async def on_command_error(ctx, error):
         )
         await ctx.send(embed=em, delete_after=10)
     if isinstance(error, commands.NoPrivateMessage):
-        em = discord.Embed(color=0xCD87A6) #light red color
+        em = discord.Embed(color=0xCD87A6)
         em.add_field(
             name="Hey! Discord blocked me!",
             value=
@@ -330,15 +359,19 @@ async def reload(ctx, ext):
             for i in range(0, len(alldirs["bot-extensions"]), 1):
                 await bot.reload_extension(alldirs["bot-extensions"][i])
             em = discord.Embed(color=0x87CDAF)
-            em.add_field(name="Reloaded all extensions",
-                         value=f"We successfully reloaded all extensions!")
+            em.add_field(
+                name="Reloaded all extensions", 
+                value=f"We successfully reloaded all extensions!"
+            )
             await ctx.send(embed=em, ephemeral=True)
             await bot.tree.sync()
             return 0
         await bot.reload_extension(ext)
         em = discord.Embed(color=0x87CDAF)
-        em.add_field(name="Reloaded extension",
-                     value=f'We reloaded this extension successfully: \"{ext}\".')
+        em.add_field(
+            name="Reloaded extension",
+            value=f'We reloaded this extension successfully: \"{ext}\".'
+        )
         await ctx.send(embed=em, ephemeral=True)
         await bot.tree.sync()
     except Exception as e:
@@ -356,7 +389,7 @@ async def echo(ctx, message):
     await ctx.send(
         "I have an error sending your message. Please contact it with developers. I am collecting error data so it can be sent to developers. (Error TTO-104)",
         ephemeral=True)
-    logger.debug(f"{ctx.author.name} used /echo! But the bot was immune...")
+    logger.cdebug(f"{ctx.author.name} used **/echo**! But the bot was immune... Lovely.")
     #await ctx.send(message)
 
 
@@ -364,17 +397,45 @@ async def echo(ctx, message):
 @discord.ext.commands.has_permissions(ban_members=True)
 @commands.guild_only()
 @commands.before_invoke(record)
-async def ban(ctx, member: Member, reason):
-    if ctx.message.author.guild_permissions.administrator or ctx.message.author.guild_permissions.ban_members:
-        await ctx.guild.ban(member)
-        await ctx.send(
-            f"Successfully banned {member} from this server. Reason: {reason} (Written by {ctx.author}.)"
+async def ban(ctx, member: Member, reason = "No specification was given.", eph = False):
+    try:
+        try:
+            em = discord.Embed(
+                color=0xCD87A6,
+                description=f"You have been banned in **{ctx.guild.name}**. || {reason}"
+            )
+            await member.send(f"You have been banned from **{ctx.guild.name}**.", embed=em)
+        except discord.errors.HTTPException:
+            pass
+
+        em = discord.Embed(color=0xCD87A6, title="Ban Notification (sent)")
+        em.add_field(
+            name="User:",
+            value=f"{member.mention}"
         )
-    else:
-        await ctx.send(
-            f"Oops! I cannot ban {member} from the server because the member you tried to ban is higher than me. Make a manual ban instead? (Error TTO-105)"
+        em.add_field(
+            name="Server staff member:",
+            value=f"{ctx.author.mention}"
         )
-        logger.debug(f"Ban didn't work for {ctx.author.name}.")
+        em.add_field(
+            name="Reason:",
+            value=f"{reason}"
+        )
+        sc = discord.Embed(
+            color=0x87CDAF,
+            description=f"✅ ***{member} was banned.***"
+        )
+        await ctx.guild.ban(member, reason=reason)
+        await ctx.send(
+            embeds = [sc, em],
+            ephemeral = eph
+        )
+    except Exception as e:
+        await ctx.send(
+            f"Oops! I cannot ban {member} from the server! Try a manual ban instead? (Error TTO-105)"
+        )
+        logger.cdebug(f"Ban failed, command runner: {ctx.author.name}.")
+        logger.error(traceback.format_exc())
 
 
 @bot.hybrid_command()
@@ -382,60 +443,57 @@ async def ban(ctx, member: Member, reason):
 @commands.guild_only()
 @commands.before_invoke(record)
 async def kick(ctx, member: Member):
-    if ctx.message.author.guild_permissions.administrator or ctx.message.author.guild_permissions.kick_members:
+    try:
         await ctx.guild.kick(member)
         await ctx.send(f"Successfully kicked {member} from the server.")
-    else:
+    except Exception:
         await ctx.send(
             f"Oops! I cannot kick {member} from the server because the member you tried to kick is higher than me. Make a manual kick instead? (Error TTO-106)"
         )
-        logger.debug(f"Kick didn't work for {ctx.author.name}.")
+        logger.cdebug(f"Kick failed, comamand runner: {ctx.author.name}.") # will output in log file set to CDEBUG
         
 #
 # Separator between launching modules and commands
 #
 
-f = open(".token", 'r') # opens a file named ".token" (used for token)
-r = f.readlines() # makes a variable which contains the file's lines
-a = str(r[0]) # gets the first line of the registered lines
-f.close # closes the file
+f = open(".token", 'r')
+r = f.readlines()
+a = str(r[0])
+f.close
 
-async def main(): # defines an asynchronized function named main()
-    async with bot: # adds the variable/function "bot" to main()
-        await bot.start(a) # waits for the variable/function "bot" to start with the token from the variable "a"
+async def main():
+    async with bot:
+        await bot.start(a)
 
-while True: # starts an infinite loop
-    try: # tries the code registered under
+while True:
+    try:
         try: 
-            loop = asyncio.get_running_loop() # makes a variable called loop which gets the current asynchronized running loop
-        except RuntimeError:  # if the tried code failed - In case of a 'RuntimeError: There is no current event loop...'
-            loop = None # makes a variable called loop which contains None (nothing)
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
 
-        if loop and loop.is_running(): # if an asynchronized loop exists and runs at the same time
-            tsk = loop.create_task(main()) # makes a task on the current loop which adds the main function to it
-            tsk.add_done_callback(lambda t: print(f'Task done with result={t.result()}  << return val of main()')) # ignore this
+        if loop and loop.is_running():
+            tsk = loop.create_task(main())
+            tsk.add_done_callback(lambda t: print(f'Task done with result={t.result()}  << return val of main()'))
         else:
-            result = asyncio.run(main()) # if no current loop is running, it will run the main function independently
-    except discord.HTTPException as e: # if discord returns an HTTP error
-        if e.status == 429: # if discord returned a ratelimited status (429)
-            logger.warning( # logs a warning on the console side
-                "The Discord servers denied the connection for making too many requests -/- Error 429" # ratelimit message
+            result = asyncio.run(main())
+    except discord.HTTPException as e:
+        if e.status == 429:
+            logger.warning(
+                "The Discord servers denied the connection for making too many requests -/- Error 429"
             ) 
-            os.system('restart.py') # uses a independant restarter, the console runs that file as its main (replit/server-hosted, deprecated)
-            os.system('kill 1') # kills the current process of this current file, closing it / restarting everything (replit/server-hosted)
+            # os.system('restart.py')
+            # os.system('kill 1')
         else:
-            logger.warning(f"HTTP error {e} was raised. Please correct it ASAP.") # if another HTTP error was raised, warns on console side and retries again
-    except Exception as e: # if anything else was raised during the infinite loop (code error, for example)
-        if type(e) == aiohttp.client_exceptions.ClientConnectorError: # if no Internet connection (deprecated?)
-            #
+            logger.warning(f"HTTP error {e} was raised. Please correct it ASAP.")
+    except Exception as e:
+        if type(e) == aiohttp.client_exceptions.ClientConnectorError:
             logger.warning(f"WHOOPS! Seems you're offline! Checking again in 5 seconds. (Error TTO-005)")
-            #
-            time.sleep(5) # sleeps the loop for one second
+            time.sleep(5)
             logger.info(f"Restarting main process...")
             os.system('main.py')
         else:
-            logger.warning(f"Error \"{e}\" (\"{type(e)}\") was raised. Please correct it ASAP. (Error TTO-000)") # raises a warning
-            logger.warning(traceback.format_exc(e)) # reports the whole traceback (necessary as it doesn't do automatically)
-            time.sleep(5) # sleeps the loop for five seconds
-            raise e # raises the error
-            quit()
+            logger.warning(f"Error \"{e}\" (\"{type(e)}\") was raised. Please correct it ASAP. (Error TTO-000)")
+            logger.warning(traceback.format_exc(e))
+            time.sleep(5)
+            raise e
