@@ -7,7 +7,7 @@
 	"stable-latest-version-com": "v2023.07.07",
 	"beta-latest-number": 11.04,
 	"beta-latest-version-num": "v2.2.0",
-	"beta-latest-version-com": "v2024.06.14",
+	"beta-latest-version-com": "v2024.07.??",
 	"Changelogs": {
 		"1": {
 			"Detailed Changelog": "- New command /clocktimer (timer)\n- Improvement of the bot (made extensions for easy reloading)",
@@ -88,7 +88,7 @@
 		},
 		"12": {
 			"Detailed Changelog": "Hello! This update is a beta update! If you see this, immediately install a stable release package or ask the owner to do so! Unless you know what you are doing.",
-			"Compact Version": "v2024.06.14",
+			"Compact Version": "v2024.07.??",
 			"Version Name": "BETA UPDATE",
 			"Second Version Number": "v2.2.0",
 			"Number": 12
