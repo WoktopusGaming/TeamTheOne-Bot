@@ -23,18 +23,19 @@ If you don't know how to do that, just... check the documentation (TBA).
 
 ### Added
 
-- Developer functionality: bot auto-update (adding and changing files only, or for now)
+- Developer functionality: bot auto-update with `update.py` (adding and changing files only, or for now)
 - Developer functionality: developer mode (skip any update change or file deletion processes, e.g. `startup.py`, process covered in documentation)
 - Host functionality: main.py auto-restart upon missing Internet connection (only on startup)
 - New log file: `fulldiscord.log`: registers all events, even DEBUG, to include Discord module action log
 - New command log level: `CDEBUG`, for command debug objects (only appears in log files)
+- New database: `alldirs.json`: contains all types of files and all their directories (useful for updates)
 
 ### Changed
 
 - Embed colours on Discord: error messages, success messages and info messages now differ within a three-colour palette shown in `main.py`, lines 100 to 104 (exception: some commands)
 - Database system: automatically deletes unredeemed keys from separate user data (database cleanup system)
 - Economy extension: removed any usage of the TeamTheOne coins wallet
-- `/ban`: Tries to message banned user before ban, now responds in embeds in same channel (Dyno-like concept)
+- `/ban`: Tries to message banned user before ban, now responds in embeds in same channel (Dyno-alike concept)
 - Main log file `discord.log` now supports `CDEBUG`, a command return separate action log (multi-update change)
 
 ### Deprecated
