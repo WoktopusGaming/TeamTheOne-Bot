@@ -90,10 +90,10 @@ logger.addHandler(handles)
 # version section
 
 def get_vnum():
-    return 11.03
+    return 12
 
 def get_vbranch():
-    return "Beta"
+    return "stable"
 
 # end separation
 
@@ -423,7 +423,7 @@ async def ban(ctx, member: Member, reason = "No specification was given.", eph =
         )
         sc = discord.Embed(
             color=0x87CDAF,
-            description=f"✅ ***{member} was banned.***"
+            description=f":white_check_mark: ***{member} was banned.***"
         )
         await ctx.guild.ban(member, reason=reason)
         await ctx.send(

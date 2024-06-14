@@ -112,13 +112,7 @@ def check_for_updates(vbranch = "stable"):
 
     
 def get_updates(vbranch = "stable"):
-    with open("db/temp.updatelog.json") as f:
-        changelog = json.load(f)
-        f.close()
-    with open("db/alldirs.json") as f:
-        alldirs = json.load(f)
-        f.close()
-    
+    oldupd = 0
     if vbranch != "Beta":
         default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/{changelog['stable-latest-version-num']}/{changelog['stable-latest-version-com']}"
         secondary_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
@@ -126,13 +120,32 @@ def get_updates(vbranch = "stable"):
         default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
         secondary_target_url = f"Beta"
 
+    with open("db/temp.updatelog.json") as f:
+        changelog = json.load(f)
+        f.close()
+    
+    try:
+        with open("db/alldirs.json") as f:
+            alldirs = json.load(f)
+            f.close()
+    except FileNotFoundError:
+        print("db/alldirs.json (old to new update exception)")
+        download_update(default_target_url, secondary_target_url, "db/temp.alldirs.json", "db/alldirs.json")
+        comparison_check("db/temp.alldirs.json", "db/alldirs.json")
+        print(" ")
+        oldupd = 1
     
     for i in range(0, len(alldirs["normal-allinone"]), 1):
+        if oldupd == 1:
+            i += 1
         print(alldirs["normal-allinone"][i])
+
         if alldirs["normal-allinone"][i] != "db/updatelog.json":
             download_update(default_target_url, secondary_target_url, alldirs["temp-allinone"][i], alldirs["normal-allinone"][i])
+
         comparison_check(alldirs["temp-allinone"][i], alldirs["normal-allinone"][i])
-        if alldirs["normal-allinone"][i] == "db/alldirs.json":
+
+        if oldupd == 0 and alldirs["normal-allinone"][i] == "db/alldirs.json":
             with open("db/alldirs.json") as f:
                 alldirs = json.load(f)
                 f.close()
