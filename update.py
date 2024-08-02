@@ -6,7 +6,7 @@ import traceback
 import filecmp
 
 def get_vnum():
-    return 1.02
+    return 1.03
 
 def download_update(default_url, fail_url, tempfilename, filename):
     print(f"Downloading file from repository...")
@@ -24,9 +24,9 @@ def download_update(default_url, fail_url, tempfilename, filename):
         if e.status != 404:
             raise Exception
         print("File from stable release not found. Looking for master branch...")
-        if fail_url == "Beta":
+        if fail_url == "unreleased":
             print(f"Please open an issue on Github including this:\n")
-            print("Error code TTO-001 - file download failed (Beta, error code 404)")
+            print(f"Error code TTO-001 - file download failed (branch {fail_url}, error code 404)")
             traceback.format_exc()
             return False
         target_url = f"{fail_url}/{filename}"
@@ -91,7 +91,7 @@ def check_for_updates(vbranch = "stable"):
         with open("db/updatelog.json") as d:
             changelog = json.load(d)
 
-        if vbranch != "Beta":
+        if vbranch == "stable":
             if users["stable-latest-number"] == changelog["stable-latest-number"] and users["stable-latest-version-num"] == changelog["stable-latest-version-num"] and users["stable-latest-version-com"] == changelog["stable-latest-version-com"]:
                 os.remove("db/temp.updatelog.json")
                 return False
@@ -101,18 +101,18 @@ def check_for_updates(vbranch = "stable"):
                 os.remove("db/temp.updatelog.json")
                 print(f"- Sorry. Your file 'db/changelog.json' got manually overwritten data, or data errors. Please redownload the repository from\n- https://github.com/WoktopusGaming/TeamTheOne-Bot/\n- for the updater to rightfully run afterwards. Thank you for your understanding.\nError code TTO-004 - file manually edited")
         else:
-            if users["beta-latest-number"] == changelog["beta-latest-number"] and users["beta-latest-version-num"] == changelog["beta-latest-version-num"] and users["beta-latest-version-com"] == changelog["beta-latest-version-com"]:
+            if users["unreleased-latest-number"] == changelog["unreleased-latest-number"] and users["unreleased-latest-version-num"] == changelog["unreleased-latest-version-num"] and users["unreleased-latest-version-com"] == changelog["unreleased-latest-version-com"]:
                 os.remove("db/temp.updatelog.json")
                 return False
-            elif users["beta-latest-number"] > changelog["beta-latest-number"]:
+            elif users["unreleased-latest-number"] > changelog["unreleased-latest-number"]:
                 return True
-            elif users["beta-latest-number"] < changelog["beta-latest-number"]:
+            elif users["unreleased-latest-number"] < changelog["unreleased-latest-number"]:
                 print("Skipping update: repository in developer mode.\n- Refer to documentation if you do not know what is developer mode.\n- It is not what you may think.")
                 os.remove("db/temp.updatelog.json")
                 return None
             else:
                 os.remove("db/temp.updatelog.json")
-                print(f"- Sorry. Your file 'db/changelog.json' got manually overwritten data, or data errors. Please redownload the repository from\n- https://github.com/WoktopusGaming/TeamTheOne-Bot/\n- for the updater to rightfully run afterwards. Thank you for your understanding.\nError code TTO-004 - file manually edited (BETA)") 
+                print(f"- Sorry. Your file 'db/changelog.json' got manually overwritten data, or data errors. Please redownload the repository from\n- https://github.com/WoktopusGaming/TeamTheOne-Bot/\n- for the updater to rightfully run afterwards. Thank you for your understanding.\nError code TTO-004u - file manually edited (UNRELEASED)") 
     except Exception as e:
         print(f"Please open an issue on Github including this:\n")
         print("Error code TTO-003 - update check failed")
@@ -128,12 +128,12 @@ def get_updates(vbranch = "stable"):
         changelog = json.load(f)
         f.close()
 
-    if vbranch != "Beta":
+    if vbranch == "stable":
         default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/{changelog['stable-latest-version-num']}/{changelog['stable-latest-version-com']}"
         secondary_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
     else:
         default_target_url = f"https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master"
-        secondary_target_url = f"Beta"
+        secondary_target_url = f"unreleased"
     
     try:
         with open("db/alldirs.json") as f:

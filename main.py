@@ -90,10 +90,10 @@ logger.addHandler(handles)
 # version section
 
 def get_vnum():
-    return 11.04
+    return 0.1105
 
 def get_vbranch():
-    return "Beta"
+    return "unreleased"
 
 # end separation
 
@@ -149,19 +149,19 @@ if updateoop != 1:
         logger.info("No update was found.")
         pass
     elif upd == True:
-        if main_branch == "Beta":
-                logger.info("An update was found for the Beta version. Installing update...")
-                logger.warn(f"WARNING: Beta versions are unstable, and any change will be installed and will overwrite any current file! It is recommended you use a stable version instead! Ignore if you are aware of the consequences this could give with your clients. If you do not want this to be shown again, you can add a # at the start of lines 147 and 148 in main.py, needing to be readded every time the update happens. If you are fine with overwriting any file, press any letter then Enter. If you are not, please type \"exit\" then Enter. Thank you for your understanding.")
+        if main_branch == "unreleased":
+                logger.info("An update was found for the unreleased version. Installing update...")
+                logger.warn(f"WARNING: Non-release versions are unstable, and any change will be installed and will overwrite any current file! It is recommended you use a stable version instead! Ignore if you are aware of the consequences this could give with your clients. If you do not want this to be shown again because you accept, you can add a # at the start of lines 154 and 155 in main.py, needing to be readded every time the update happens. If you are fine with overwriting any file, press any letter then Enter. If you are not, please type \"exit\" then Enter. Thank you for your understanding.")
                 upd_exit = input()
                 try:
                     if upd_exit == "exit":
-                        logger.info("Beta version update installation cancelled.")
+                        logger.info("Unreleased version update installation cancelled.")
                         pass
                     else:
-                        update.get_updates("Beta")
+                        update.get_updates("unreleased")
                 except NameError:
-                    logger.info("Skipping Beta version update warning.")
-                    update.get_updates("Beta")
+                    logger.info("Skipping unreleased version update warning.")
+                    update.get_updates("unreleased")
         else:
             if main_version < changelog["stable-latest-number"]:
                 logger.info("An update was found for the stable release. Installing update...")
@@ -270,7 +270,7 @@ async def on_ready():
     await bot.change_presence(
         activity=discord.Activity(
             type=discord.ActivityType.playing, 
-            name="on BETA v2.2.0 | TTO"
+            name="dev's randomness"
             )
         )
 
@@ -285,7 +285,7 @@ async def on_ready():
 
 @bot.event
 async def on_command_error(ctx, error):
-    logger.debug(
+    logger.cdebug(
         f"Error {error} happened using /{ctx.command} as {ctx.author.name}.")
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(color=0xCD87A6)
@@ -310,7 +310,7 @@ async def on_command_error(ctx, error):
         em.add_field(
             name="Don't surpass to my owner!",
             value=
-            f"You tried to use a Owner-Only command. Well, bad luck for you, you ain't! (Error TTO-102)"
+            f"You tried to use a bot owner-only command. Well, bad luck for you, I can differentiate one from another! (Error TTO-102)"
         )
         await ctx.send(embed=em, delete_after=10)
     if isinstance(error, commands.NoPrivateMessage):
@@ -382,16 +382,22 @@ async def reload(ctx, ext):
         logger.error(traceback.format_exc())
 
 
-@bot.hybrid_command(alias="say")
+# To do: add channel as option
+@bot.hybrid_command()
 @commands.guild_only()
 @commands.before_invoke(record)
 async def echo(ctx, message):
-    await ctx.send(
-        "I have an error sending your message. Please contact it with developers. I am collecting error data so it can be sent to developers. (Error TTO-104)",
-        ephemeral=True)
-    logger.cdebug(f"{ctx.author.name} used **/echo**! But the bot was immune... Lovely.")
-    #await ctx.send(message)
-
+    try:
+        echo = bot.get_channel(ctx.channel.id)
+        await echo.send(message)
+        await ctx.send("Sent!", ephemeral=True)
+    except Exception as e:
+        await ctx.send(
+            "I have an error sending your message. (Error TTO-104)",
+            ephemeral=True
+        )
+        logger.cdebug(f"Failed to send message, command runner: {ctx.author.name}.")
+        traceback.format_exc()
 
 @bot.hybrid_command()
 @discord.ext.commands.has_permissions(ban_members=True)
