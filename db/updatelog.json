@@ -7,7 +7,7 @@
 	"stable-latest-version-com": "v2023.07.07",
 	"unreleased-latest-number": 0.1105,
 	"unreleased-latest-version-num": "INDEV v2.2.0",
-	"unreleased-latest-version-com": "v2024.07.??",
+	"unreleased-latest-version-com": "v2025.??.??",
 	"Changelogs": {
 		"1": {
 			"Detailed Changelog": "- New command /clocktimer (timer)\n- Improvement of the bot (made extensions for easy reloading)",
@@ -87,8 +87,8 @@
 			"Number": 0.11
 		},
 		"12": {
-			"Detailed Changelog": "Hello! This update is an unreleased update! If you see this, immediately install a stable release package or ask the owner to do so! Unless you know what you are doing.",
-			"Compact Version": "v2024.07.??",
+			"Detailed Changelog": "Hello! This update is an unreleased update! If you see this, immediately install a stable release package or ask the owner to do so! Unless you or they know what you or they are doing.",
+			"Compact Version": "v2025.??.??",
 			"Version Name": "UNRELEASED UPDATE",
 			"Second Version Number": "INDEV v2.2.0",
 			"Number": 0.12
