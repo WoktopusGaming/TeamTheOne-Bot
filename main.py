@@ -1,4 +1,4 @@
-# This code used to be based on the following example:
+# This code got some of its bases thanks to the following example:
 # https://discordpy.readthedocs.io/en/stable/quickstart.html#a-minimal-bot
 # before going its own way, yet using the documentation
 

@@ -5,21 +5,25 @@ All changes will be documented in this file for easy read for developers and mos
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+This changelog is not parsed and might not be able to be parsed by the
+[Keep a Changelog](https://github.com/olivierlacan/keep-a-changelog/) Ruby application; it is manually edited.
+
 ### **Disclaimers**
-- *This changelog is based on the changelogs collectively regrouped in `db/updatelog.json`,
+- *Changelogs before v2.2.0i are based on the changelogs collectively regrouped in `db/updatelog.json`,
 but not all changes are made after open-sourcing of the bot.
 Most updates were also made the same day as another one,
 because I didn't know about Semantic Versioning at that time,
 and I just added another update to changelog everytime I changed something.
 Hope all of that won't get you lost, though.*
-- *The whole bot is still in development - in INDEV alpha precisely - and may have changes to come.*
+- Changelogs for v2.1.0i and under were made before the idea of open-sourcing the bot whilst in local development.
+Some lines may include workarounds only on the official side of the bot before its localhosting period,
+which started on May 2023 by previous host backup, and before its open-sourcing on July 2023.
+- *The whole bot is still in development - in INDEV alpha precisely - and may have a lot of changes to come.*
 - ***DO NOT TRY TO PARSE THIS FILE UNLESS YOU'RE SURE**: the file is only BASED and has edits on the version numbers that contain lowercase letters at the end, which may return errors while using a premade parser.*
   - A means Alpha (not INDEV);
   - B means Beta (not INDEV);
   - I means INDEV, regardless of version type;
-  - U means *ANY non-released version not able to be classified under A or B*
 - If you look for tags of previous releases in [the specified section](#tags), you may not find anything older than v2.1.0i, and for a normal reason: I don't have any backup or version of these old updates.
-- Changelogs for v2.1.0i and under were made before the idea of open-sourcing the bot. Some lines may include changed bot behaviour only on the hosted bot code before July 2023.
 
 ## [Unreleased]
 
@@ -30,22 +34,24 @@ If you don't know how to do that, just... check the documentation (TBA).
 ### Added
 
 - Developer functionality: bot auto-update with `update.py` (adding and changing files only, or for now)
-  - *Note:* updater available INDEV v2.1.0 to v2.2.0 and higher: check page in documentation (TBA)
+  - *Note:* updater available v2.1.0i and under to v2.2.0i and higher: check page in documentation (TBA)
 - Developer functionality: developer mode (skip any update change or file deletion processes, e.g. `startup.py`, process covered in documentation)
 - Host functionality: main.py auto-restart upon missing Internet connection (only on startup)
 - New log file: `fulldiscord.log`: registers all events, even DEBUG, to include Discord module action log
-- New command log level: `CDEBUG`, for command debug objects (only appears in log files)
+- New command log level: `CDEBUG`, for command debug objects (only appears in log files to not overload terminal)
 - New database: `alldirs.json`: contains all types of file paths (useful for updates)
 - New command: `/echo`: the bot says what you want to say (please no random shit in it, I don't have the mood to make a filter for everything in that...)
 
 ### Changed
 
+- Changelog now only mention code changes, and not official bot-only changes
 - All updatelog: added INDEV in version numbers; changed beta variables to unreleased
 - Embed colours on Discord: error messages, success messages and info messages now differ within a three-colour palette shown in `main.py`, lines 100 to 104 (exception: some commands)
 - Database system: automatically deletes unredeemed keys from separate user data (database cleanup system)
+  - Useful only if host used v2.1.0i or older systems
 - Economy extension: removed any usage of the TeamTheOne coins wallet
 - `/ban`: Tries to message banned user before ban, now responds in embeds in same channel (Dyno-alike concept)
-  - Can be improved further in future update
+  - Can be improved further in the future
 - Main log file `discord.log` now supports `CDEBUG`, a command return separate action log (multi-update change)
 
 ### Deprecated
@@ -79,7 +85,7 @@ If you don't know how to do that, just... check the documentation (TBA).
 ### Deprecated
 
 - TeamTheOne coins wallet (not announced in original update: announced way later)
-- "Partner system" Discord-like concept (was never announced, got shadow-removed by lack of usage and development on that system)
+- "Partner system" Discord-like concept (was never announced, got shadow-removed three days after update by lack of usage and development on that system)
 
 ### Removed
 
@@ -195,3 +201,5 @@ If you don't know how to do that, just... check the documentation (TBA).
 First version on the bot, based on the Discord.py official documentation.
 
 ## Tags
+[UNRELEASED]: https://github.com/WoktopusGaming/TeamTheOne-Bot/compare/v2.1.0i...HEAD
+[2.1.0i]: https://github.com/WoktopusGaming/TeamTheOne-Bot/releases/tag/v2.1.0i
