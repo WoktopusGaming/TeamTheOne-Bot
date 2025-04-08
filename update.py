@@ -4,9 +4,15 @@ import json
 import os
 import traceback
 import filecmp
+import argparse
+
+parser = argparse.ArgumentParser(description="TeamTheBot updater python app.")
+parser.add_argument("--install", action="store_true", dest="install", default=False, help="Switches updater to install mode.")
+parser.add_argument("--upgrade", action="store_true", dest="update", default=False, help="Switches updater to force update mode.")
+args = parser.parse_args()
 
 def get_vnum():
-    return 1.03
+    return 1.04
 
 def download_update(default_url, fail_url, tempfilename, filename):
     print(f"Downloading file from repository...")
@@ -140,7 +146,7 @@ def get_updates(vbranch = "stable"):
             alldirs = json.load(f)
             f.close()
     except FileNotFoundError:
-        print("db/alldirs.json (old to new update exception)")
+        print("db/alldirs.json (old to new update or new install exception)")
         download_update(default_target_url, secondary_target_url, "db/temp.alldirs.json", "db/alldirs.json")
         comparison_check("db/temp.alldirs.json", "db/alldirs.json")
         print(" ")
@@ -150,6 +156,10 @@ def get_updates(vbranch = "stable"):
             f.close()
     
     for i in range(0, len(alldirs["normal-allinone"]), 1):
+        if oldupd == 1 and i+1 < len(alldirs["normal-allinone"]):
+            i += 1
+        elif oldupd == 1: break
+        
         print(alldirs["normal-allinone"][i])
 
         if alldirs["normal-allinone"][i] != "db/updatelog.json":
@@ -164,5 +174,19 @@ def get_updates(vbranch = "stable"):
         print(" ")
 
 if __name__ == "__main__":
-    print("Please, do not start update.py as the starting file.\nStart main.py instead. We will do it for you.\nStarting main.py...")
-    os.system("main.py")
+    if args.install:
+        print("Starting installation. Please do not exit the program whilst it is running.")
+        try: get_updates()
+        except Exception as e: traceback.format_exc(e); print("The program will quit. If it's an issue you may not know, please contact the developer."); quit()
+        print("Installation is complete. You can run main.py now."); quit()
+    elif args.update:
+        print("Starting updating. Please do not exit the program whilst it is running.")
+        try:
+            upd = check_for_updates()
+            if upd == True: get_updates()
+        except Exception as e: traceback.format_exc(e); print("\n\n\nThe program will quit. If it's an issue you may not know, please contact the developer."); quit()
+        print("Update is complete."); quit()
+    else:
+        print("Please, do not start update.py as the starting file.\nStart main.py instead. We will do it for you.\nStarting main.py...")
+        try: os.system("main.py")
+        except FileNotFoundError: print("We did not find main.py, please use the command line and add the \"--install\" argument at the end.")

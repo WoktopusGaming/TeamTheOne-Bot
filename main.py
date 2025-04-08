@@ -76,7 +76,7 @@ handlee = logging.handlers.RotatingFileHandler(
     filename='fulldiscord.log',
     encoding='utf-8',
     maxBytes=10 * 1024 * 1024,
-    backupCount=3
+    backupCount=5
 )
 handlee.setLevel(logging.DEBUG)
 handlee.setFormatter(formatter)
@@ -90,7 +90,7 @@ logger.addHandler(handles)
 # version section
 
 def get_vnum():
-    return 0.1105
+    return 0.1107
 
 def get_vbranch():
     return "unreleased"
@@ -151,7 +151,7 @@ if updateoop != 1:
     elif upd == True:
         if main_branch == "unreleased":
                 logger.info("An update was found for the unreleased version. Installing update...")
-                logger.warn(f"WARNING: Non-release versions are unstable, and any change will be installed and will overwrite any current file! It is recommended you use a stable version instead! Ignore if you are aware of the consequences this could give with your clients. If you do not want this to be shown again because you accept, you can add a # at the start of lines 154 and 155 in main.py, needing to be readded every time the update happens. If you are fine with overwriting any file, press any letter then Enter. If you are not, please type \"exit\" then Enter. Thank you for your understanding.")
+                logger.warning(f"WARNING: Non-release versions are unstable, and any change will be installed and will overwrite any current file! It is recommended you use a stable version instead! Ignore if you are aware of the consequences this could give with your clients. If you do not want this to be shown again because you accept, you can add a # at the start of lines 154 and 155 in main.py, needing to be readded every time the update happens. If you are fine with overwriting any file, press any letter then Enter. If you are not, please type \"exit\" then Enter. Thank you for your understanding.")
                 upd_exit = input()
                 try:
                     if upd_exit == "exit":
@@ -385,17 +385,23 @@ async def reload(ctx, ext):
 # To do: add channel as option
 @bot.hybrid_command()
 @commands.guild_only()
-@commands.before_invoke(record)
 async def echo(ctx, message):
     try:
         echo = bot.get_channel(ctx.channel.id)
         await echo.send(message)
+
+        # modified @commands.before_invoke(record) specially for echos
+        with open("discord.com.log", "a") as f:
+            if len(message) >= 350:
+                f.write(f"{ctx.author} used /{ctx.command} at \"{ctx.message.created_at}\":\n-------------\n{message}\n-------------\n")
+            else:
+                f.write(f"{ctx.author} used /{ctx.command} at \"{ctx.message.created_at}\": \"{message}\"\n")
+        f.close()
+        # end separation
+
         await ctx.send("Sent!", ephemeral=True)
     except Exception as e:
-        await ctx.send(
-            "I have an error sending your message. (Error TTO-104)",
-            ephemeral=True
-        )
+        await ctx.send("I have an error sending your message. (Error TTO-104)", ephemeral=True)
         logger.cdebug(f"Failed to send message, command runner: {ctx.author.name}.")
         traceback.format_exc()
 
