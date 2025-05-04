@@ -75,7 +75,8 @@
     ]
   },
   "bot-extensions": [
-    "ext.economy"
+    "ext.economy",
+    "ext.shop"
   ],
   "temp-allinone": [
     "db/temp.alldirs.json",
