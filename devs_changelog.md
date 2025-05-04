@@ -8,42 +8,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This changelog is not parsed and might not be able to be parsed currently, as it is manually edited.
 
 ### **Disclaimers**
-- *Changelogs before v2.2.0i are based on the changelogs collectively regrouped in `db/updatelog.json`,
+- *Changelogs before v2.2.0i/0.1.1 are based on the changelogs collectively regrouped in `db/updatelog.json`,
 but not all changes are made after open-sourcing of the bot.
 Most updates were also made the same day as another one,
 because I didn't know about Semantic Versioning at that time,
 and I just added another update to changelog everytime I changed something.
 Hope all of that won't get you lost, though.*
-- Changelogs for v2.1.0i and under were made before the idea of open-sourcing the bot whilst in local development.
+- Changelogs for 2.1.0i/0.1.0 and under were made before the idea of open-sourcing the bot whilst in local development.
 Some lines may include workarounds only on the official side of the bot before its localhosting period,
 which started on May 2023 by previous host backup, and before its open-sourcing on July 2023.
-- *The whole bot is still in development - in INDEV alpha precisely - and may have a lot of changes to come.*
+- *The whole bot is still in development - in alpha precisely - and may have a lot of changes to come.*
 - ***DO NOT TRY TO PARSE THIS FILE UNLESS YOU'RE SURE**:
-the file is only BASED and has edits on the version numbers that contain lowercase letters at the end,
-which may return errors while using a premade parser.*
-  - A means Alpha (not INDEV);
-  - B means Beta (not INDEV);
-  - I means INDEV, regardless of version type;
+the file has one or more versions portrayed by the lowercase letter I after it's version.
+Those are versions made during the INDEV phase of the bot, when it was hosted on repl.it.
+Newer versions will be accounted without the lowercase letter.
 - If you look for tags of previous releases,
-you may not find anything older than v2.1.0i, and for a normal reason:
-I don't have any backup or version of these old updates or must check.
+you may not find anything older than 2.1i/0.1.0, and for a normal reason:
+source code does not have any version of those old updates. A backup of the first version exists currently for the 
 - TAKE NOTE OF THE FOLLOWING:
-  - The updater file will recieve more updates post v2.2.0 for optimisation and make it auto-reliable on itself.
+  - The updater file will recieve more updates post 2.1i/0.1 for optimisation and make it auto-reliable on itself.
   - The startup file is subject to a change soon or later.
   - This whole changelog is subject to a change sooner or later due to a new parsing system I want to develop for the bot.
-  It will so then exclude all versions prior to v2.0,
+  It will so then exclude all versions prior to 2.0i/0.0,
   which will be considered the first development "release",
-  and v2.1 the first open-source release.
-  Commit timeline doesn't go any further than v2.1 anyways.
+  and 2.1i/0.1 the first open-source release.
+  Commit timeline doesn't go any further than 2.1i/0.1 anyways.
   - Disclaimers will soon disappear from changelog to parse more easily. So will most text.
   - The update numbers are *subject to change at any time in the near future.*
 
 ## [Unreleased]
+Also known as version 0.1.1, formerly known as version 2.2.0i.
 
 ### Added
 
 - Developer functionality: bot auto-update with `update.py` (adding and changing files only, or for now)
-  - *Note:* updater available v2.1.0i and under to v2.2.0i and higher: check page in documentation (TBD)
+  - *Note:* updater available 2.1.0i/0.1.0 and under to 2.2.0i/0.1.1 and higher: check page in documentation (TBD)
 - Developer functionality: developer mode (skip any update change or file deletion processes, e.g. `startup.py`, process covered in documentation)
 - Local host / auto run functionality: `update.py` now support command line arguments `--upgrade` and `--install` for faster invoking of these processes
 - Local host / auto run functionality: `main.py` now supports command line argument `--devmode` for enabling developer mode faster than database check
@@ -71,6 +70,8 @@ I don't have any backup or version of these old updates or must check.
 ### Deprecated
 
 - All updates before v2.0.0i in the updatelog will be removed later for irrelevance with the current bot (I am breaking the bot's history, yes)
+  - They are kept in this changelog here, but will be in a "older changelog" section
+  - All changelogs that were replaced from the old system will have a "formerly" statement underneath their header
 - Updater: auto-updating the updater will be deprecated from main.py as updater will auto-update itself before all-dirs
   - (Only applies for all users who have used the Beta v2.2i version of the bot; if not used, this doesn't apply to you)
   - This is a possible deprecation; it might not happen at all
@@ -89,7 +90,8 @@ I don't have any backup or version of these old updates or must check.
 - Official bot: Continuation of the discriminator removal (accidentally left remains)
 - Other bug fixes here and there (bugs I found very late)
 
-## [2.1.0i] - 2023-07-07
+## [0.1.0] - 2023-07-07
+Formerly known as version 2.1.0i.
 
 ### Added
 
@@ -116,7 +118,11 @@ I don't have any backup or version of these old updates or must check.
 - `ExtensionAlreadyLoaded unexistant`: Directory-specific fix, no longer returns this error upon startup on official bot localhost
 - Command `/daily` usage: showed elapsed time between last daily and now instead of remaining time
 
-## 2.0.0i - 2023-05-16
+## 0.0.0 - 2023-05-16
+Formerly known as version 2.0.0i;
+also known as initial commit version.
+
+All changes written under are changes made in comparison to older versions.
 
 ### Added
 
@@ -144,6 +150,8 @@ I don't have any backup or version of these old updates or must check.
 
 - Economy system: Database "unregistered" errors were removed
 - Database: Inventory and wallets no longer automatically reset
+
+# Old Changelog
 
 ## 1.1.3i - 2023-03-12
 
@@ -216,9 +224,9 @@ I don't have any backup or version of these old updates or must check.
 
 - Command organisation and bot improvement (made extensions for easy reloading)
 
-## 0.1.0i - 2022-09-16
+## 0.0.0i - 2022-09-16
 
 First version on the bot, based on the Discord.py official documentation (Replit's auto configuration)
 
-[UNRELEASED]: https://github.com/WoktopusGaming/TeamTheOne-Bot/compare/v2.1.0i...HEAD
-[2.1.0i]: https://github.com/WoktopusGaming/TeamTheOne-Bot/releases/tag/v2.1.0i
+[UNRELEASED]: https://github.com/WoktopusGaming/TeamTheOne-Bot/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/WoktopusGaming/TeamTheOne-Bot/releases/tag/v0.1.0
