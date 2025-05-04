@@ -228,5 +228,5 @@ All changes written under are changes made in comparison to older versions.
 
 First version on the bot, based on the Discord.py official documentation (Replit's auto configuration)
 
-[UNRELEASED]: https://github.com/WoktopusGaming/TeamTheOne-Bot/compare/0.1.0...HEAD
+[UNRELEASED]: https://github.com/WoktopusGaming/TeamTheOne-Bot/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/WoktopusGaming/TeamTheOne-Bot/releases/tag/v0.1.0
