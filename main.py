@@ -6,6 +6,15 @@
 # I removed comments at the end of each single line, I'm sorry
 # - WoktopusGaming, aka Etchy / Echazarel
 
+import argparse
+
+mainparser = argparse.ArgumentParser(description="TeamTheBot main Python app.")
+mainparser.add_argument("--devmode", action="store_true", dest="devparse", default=False, help="Enables developer mode without database checks.")
+args = mainparser.parse_args()
+
+if args.devparse:
+    print("Valid.")
+
 import aiohttp
 import asyncio
 import discord
@@ -57,7 +66,7 @@ logging.getLogger('discord.http').setLevel(logging.INFO)
 handler = logging.handlers.RotatingFileHandler(
     filename='discord.log',
     encoding='utf-8',
-    maxBytes=2 * 1024 * 1024,
+    maxBytes=1 * 1024 * 1024,
     backupCount=5
 )
 handler.setLevel(logging.CDEBUG)
@@ -75,7 +84,7 @@ logger.addHandler(handler)
 handlee = logging.handlers.RotatingFileHandler(
     filename='fulldiscord.log',
     encoding='utf-8',
-    maxBytes=10 * 1024 * 1024,
+    maxBytes=100 * 1024 * 1024,
     backupCount=5
 )
 handlee.setLevel(logging.DEBUG)
@@ -105,10 +114,22 @@ def get_vbranch():
 
 # updating section
 
-if updateoop != 1:
+devmode = 0
+
+with open("db/users.json") as f:
+    dev = json.load(f)
+
+try:
+    if dev["developermode"] == True or args.devparse:
+        devmode = 1
+        print("Developer mode enabled, skipping update check.\n- Refer to documentation if you do not know what is developer mode.\n- It is not what you may think.")
+except Exception:
+    pass
+
+if updateoop != 1 and devmode == 0:
     logger.info("Checking for bot and updater updates...")
     upd = update.check_for_updates(get_vbranch())
-else:
+elif updateoop == 1:
     logger.error("Could not check for updates: updater missing.\n- Please download it from \n- https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/update.py \n- and restart the app.")
 
 target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/update.py"
@@ -120,7 +141,6 @@ changelog = json.load(changelogreq)
 main_version = get_vnum()
 main_branch = get_vbranch()
 update_version = update.get_vnum()
-devmode = 0
 
 if update_version < changelog["stable-updpy"]:
     with open("temp.update.py", "w") as f:
@@ -144,7 +164,7 @@ if update_version < changelog["stable-updpy"]:
 
 
 
-if updateoop != 1:
+if updateoop != 1 and devmode == 0:
     if upd == False:
         logger.info("No update was found.")
         pass
@@ -229,7 +249,7 @@ try:
         if devmode != 1:
             os.remove('startup.py')
         else:
-            print("Developer mode enabled, skipping startup.py deletion check.")
+            print("Skipping startup.py deletion check.")
             pass
 except FileNotFoundError:
     pass
@@ -266,20 +286,19 @@ except Exception as e:
 
 @bot.event
 async def on_ready():
-    print("Bot is online and ready as", format("TeamTheOne Bot"))
     await bot.change_presence(
         activity=discord.Activity(
             type=discord.ActivityType.playing, 
-            name="dev's randomness"
+            name="TeamTheBot"
             )
         )
 
     alldirs = json.load(open("db/alldirs.json"))
     for i in range(0, len(alldirs["bot-extensions"]), 1):
-        await bot.load_extension(alldirs["bot-extensions"][i])
+        try: await bot.load_extension(alldirs["bot-extensions"][i])
+        except Exception: pass
         
-    await bot.tree.sync()
-    logger.info("Bot set up and running")
+    logger.info("Successfully connected to Discord API")
 
 
 
@@ -332,7 +351,6 @@ async def load(ctx, ext):
     try:
         await bot.load_extension(ext)
         await ctx.send(f'Extension \"{ext}\" successfully loaded.', ephemeral=True)
-        await bot.tree.sync()
     except Exception as e:
         await ctx.send('Can\'t load extension. (Error TTO-107)', ephemeral=True)
         logger.error(traceback.format_exc())
@@ -344,7 +362,6 @@ async def unload(ctx, ext):
     try:
         await bot.unload_extension(ext)
         await ctx.send(f'Extension \"{ext}\" successfully unloaded.', ephemeral=True)
-        await bot.tree.sync()
     except Exception as e:
         await ctx.send('Can\'t unload extension. (Error TTO-108)', ephemeral=True)
         logger.error(traceback.format_exc())
@@ -352,28 +369,58 @@ async def unload(ctx, ext):
 
 @bot.hybrid_command()
 @commands.is_owner()
-async def reload(ctx, ext):
+async def reload(ctx, ext, id = 0):
     try:
         if ext == "all":
             alldirs = json.load(open("db/alldirs.json"))
             for i in range(0, len(alldirs["bot-extensions"]), 1):
-                await bot.reload_extension(alldirs["bot-extensions"][i])
+                try:
+                    await bot.reload_extension(alldirs["bot-extensions"][i])
+                except discord.ext.commands.errors.ExtensionNotLoaded as e:
+                    await bot.load_extension(alldirs["bot-extensions"][i])
+            
             em = discord.Embed(color=0x87CDAF)
             em.add_field(
                 name="Reloaded all extensions", 
                 value=f"We successfully reloaded all extensions!"
             )
+
+            if id == 0:
+                await bot.tree.sync()
+            else:
+                try:
+                    await bot.tree.sync(guild=discord.Object(id=id))
+                except Exception:
+                    await bot.tree.sync()
+            
             await ctx.send(embed=em, ephemeral=True)
-            await bot.tree.sync()
-            return 0
-        await bot.reload_extension(ext)
+            logger.info(f"Reloaded all extensions")
+            return None
+        
+        try:
+            await bot.reload_extension(ext)
+        except discord.ext.commands.errors.ExtensionNotLoaded as e:
+            await bot.load_extension(ext)
+        
         em = discord.Embed(color=0x87CDAF)
         em.add_field(
             name="Reloaded extension",
             value=f'We reloaded this extension successfully: \"{ext}\".'
         )
+
+        if id == 0:
+            await bot.tree.sync()
+        else:
+            try: 
+                await bot.tree.sync(guild=discord.Object(id=id))
+            except Exception as e: 
+                em.add_field(
+                    name="Tree sync failed",
+                    value=f'Tree synchronisation to guild {id} failed. Exiting synchronisation process. (Error TTO-112)'
+                )
+        
         await ctx.send(embed=em, ephemeral=True)
-        await bot.tree.sync()
+        logger.info(f"Reloaded extension {ext}")
     except Exception as e:
         if ext == "all":
             await ctx.send('Can\'t reload all extensions. (Error TTO-109)', ephemeral=True)

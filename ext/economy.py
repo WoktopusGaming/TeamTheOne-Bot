@@ -1,7 +1,5 @@
 from discord.ext import commands
-from discord import app_commands
 from discord import Member
-from discord import utils
 
 import json
 import os
@@ -10,14 +8,8 @@ import random
 import traceback
 import logging
 import datetime
-import time
 
-# note to self
-# Item reminder:
-# - Type 1 = Unconsumable
-# - Type 2 = Consumable
-#
-# Duration (seconds): 60 = 1 min; 3600 = 1h; 86400 = 1d; etc.
+logger = logging.getLogger('discord')
 
 #async def record - command invoke recorder for statistics / VERSION 1
 
@@ -28,7 +20,7 @@ async def record(ctx):
 
 #end separation
 
-
+#note to self: all commmands here can be invoked with "import economy" or "import ext.economy"
 async def get_users_data():
     with open("db/users.json") as f:
         users = json.load(f)
@@ -59,35 +51,12 @@ async def update_account(user, users):
     except KeyError:
         users["Users"][f"{user.id}"]["Streaks"] = {}
         users["Users"][f"{user.id}"]["Streaks"]["Daily"] = 0
-        
-    for i in users["Shop"]["Items"]:
-        try:
-            if users["Users"][f"{user.id}"]["Inventory"][f"{i}"] == 0:
-                users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
-        except KeyError:
-            try:
-                users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
-            except KeyError:
-                users["Users"][f"{user.id}"]["Inventory"] = {}
-                users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
-                
-    for i in users["Keys"]:
-        if str(i) == "KeysNum":
-            pass
-        else:
-            try:
-                if users["Users"][f"{user.id}"]["Keys"][f"{i}"] != False:
-                    pass
-            except KeyError:
-                try:
-                    users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
-                except:
-                    users["Users"][f"{user.id}"]["Keys"] = {}
-                    users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
     
-    for i in users["Users"][f"{user.id}"]["Keys"]:
-        if users["Users"][f"{user.id}"]["Keys"][f"{i}"] == False:
-            del users["Users"][f"{user.id}"]["Keys"][f"{i}"]
+    try:
+        if users["Users"][f"{user.id}"]["Buff"] != None:
+            pass
+    except KeyError:
+        users["Users"][f"{user.id}"]["Buff"] = {}
     
     return users
     
@@ -112,27 +81,11 @@ async def update_database(users):
             users["Users"][f"{i}"]["Streaks"] = {}
             users["Users"][f"{i}"]["Streaks"]["Daily"] = 0
         
-        for n in users["Shop"]["Items"]:
-            try:
-                if users["Users"][f"{i}"]["Inventory"][f"{n}"] == 0:
-                    users["Users"][f"{i}"]["Inventory"][f"{n}"] = 0
-            except KeyError:
-                try:
-                    users["Users"][f"{i}"]["Inventory"][f"{n}"] = 0
-                except KeyError:
-                    users["Users"][f"{i}"]["Inventory"] = {}
-                    users["Users"][f"{i}"]["Inventory"][f"{n}"] = 0
-                
-        for n in users["Keys"]:
-            try:
-                if users["Users"][f"{i}"]["Keys"][f"{n}"] != False:
-                    pass
-            except KeyError:
-                try:
-                    users["Users"][f"{i}"]["Keys"][f"{n}"] = False
-                except:
-                    users["Users"][f"{i}"]["Keys"] = {}
-                    users["Users"][f"{i}"]["Keys"][f"{n}"] = False
+        try:
+            if users["Users"][f"{i}"]["Buff"] != None:
+                pass
+        except KeyError:
+            users["Users"][f"{i}"]["Buff"] = {}
         
     return users
 
@@ -151,18 +104,17 @@ async def open_account(user):
         users["Users"][f"{user.id}"]["Streaks"]["Daily"] = 1
         
         users["Users"][f"{user.id}"]["Inventory"] = {}
-        for i in users["Shop"]["Items"]:
-            users["Users"][f"{user.id}"]["Inventory"][f"{i}"] = 0
         
-        users["Users"][f"{user.id}"]["Keys"] = {}
-        for i in users["Keys"]:
-            users["Users"][f"{user.id}"]["Keys"][f"{i}"] = False
+        users["Users"][f"{user.id}"]["Keys"] = []
 
     with open("db/users.json", 'w') as f:
-        json.dump(users, f, indent='\t')
+        json.dump(users, f)
 
     return True
 
+#end of command invoke possibility
+
+#note to self - remove this command and make it its own extensions (has nothing to do here, i guess)
 @discord.app_commands.describe(cpage = "Chooses the changelog page in the catalog. 0 shows all changelogs's other specifications.", eph = "Checks if you want it ephemeral or not. True by default.")
 @commands.hybrid_command(brief="Shows up the changelog")
 @commands.before_invoke(record)
@@ -206,7 +158,7 @@ async def changelog(ctx, cpage = 0, eph = True):
             await ctx.send(embed=em, ephemeral=eph)
     except Exception as e:
         await ctx.send('I might have broke myself while retrieving the changelogs... **(Error TTO-111)**', ephemeral=eph)
-        logging.error(traceback.format_exc())
+        logger.error(traceback.format_exc())
 
 @commands.hybrid_command()
 @commands.guild_only()
@@ -228,11 +180,11 @@ async def give(ctx, amt:int, mem:Member):
         users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
         users["Users"][str(mem.id)]["Username"] = mem.name
         with open("db/users.json", "w") as f:
-            json.dump(users, f, indent="\t")
+            json.dump(users, f)
         await ctx.send(f"Successfully given {earnings} to {mem.display_name}!")
     except Exception:
         await ctx.send("I sent my report to the developers. I might have broke the giving machine... (Error TTO-113)")
-        logging.error(traceback.format_exc())
+        logger.error(traceback.format_exc())
 
 @commands.hybrid_command(brief="Check how many money you have.")
 @commands.before_invoke(record)
@@ -250,10 +202,10 @@ async def wallet(ctx, member:Member = commands.parameter(default=lambda ctx: ctx
 
         em = discord.Embed(title=f"{mem.name}'s balance.", color=0x66CAFE)
         em.add_field(name="Multiserver Wallet Balance", value=wallet_amt)
-        await ctx.send(f"Hey there! If you had any TTO coin, we have transferred the amounts to your multi-server wallet, with a rate of 100 coins per TTO coin. Thank you for having used this currency at the first place. We will add more in the future, so stay tuned to updates!\n\- WoktopusGaming, owner / developer", embed=em)
+        await ctx.send(embed=em)
     except Exception as e:
         await ctx.send("I sent my report to the developers. I might have broke the bank system... (Error TTO-114)")
-        logging.error(traceback.format_exc())
+        logger.error(traceback.format_exc())
 
 @discord.ext.commands.cooldown(1, 15, commands.BucketType.user)
 @commands.hybrid_command(brief="Begs someone to give you money.")
@@ -267,7 +219,7 @@ async def beg(ctx):
     users["Users"][str(user.id)]["Wallet"] += earnings
     users["Users"][str(user.id)]["Username"] = user.name
     with open("db/users.json", 'w') as f:
-        json.dump(users, f, indent="\t")
+        json.dump(users, f)
     await ctx.send(f"Someone gave you {earnings} coins! You added them to your multiserver wallet.")
 
 @commands.hybrid_command()
@@ -290,7 +242,7 @@ async def rob(ctx, member:Member):
       users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
       users["Users"][str(member.id)]["Username"] = member.name
       with open("db/users.json", "w") as f:
-        json.dump(users, f, indent="\t")
+        json.dump(users, f)
       await ctx.send(f"Bad luck! {member.display_name} saw you trying to rob his money! He thought you robbed already, so you apologized and lost {coinless} coins.")
       return 0
   else:
@@ -300,7 +252,7 @@ async def rob(ctx, member:Member):
     users["Users"][str(ctx.author.id)]["Username"] = ctx.author.name
     users["Users"][str(member.id)]["Username"] = member.name
     with open("db/users.json", "w") as f:
-      json.dump(users, f, indent="\t")
+      json.dump(users, f)
     await ctx.send(f"You successfully robbed {member.display_name} and won {coinless * 5}.")
 
 ascup = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -344,10 +296,10 @@ async def gen(ctx, amount = 1, hidemsg = True, strnum = 8, keytype = 1, value = 
             normal += f'\n- \"{key}\"'
         await ctx.send(normal, ephemeral=hidemsg)
         with open("db/users.json", 'w') as f:
-            json.dump(keys, f, indent="\t")
+            json.dump(keys, f)
     except Exception as e:
         await ctx.send('While generating codes, I might have lost the keys for access to vault... (Error TTO-115)')
-        await logging.error(traceback.format_exc())
+        logger.error(traceback.format_exc())
 
 @discord.app_commands.describe(key = "The key to redeem", eph = "Checks if you want it ephemeral or not")
 @commands.hybrid_command(brief="Redeem your codes you found out using this command")
@@ -359,13 +311,23 @@ async def redeem(ctx, key, eph = True):
     
     try:
         try:
-            keycheck = keys["Keys"][key]
+            keycheck1 = keys["Keys"][key]
         except Exception as e:
             em = discord.Embed(color=0xCD87A6) #light red color
             em.add_field(
                 name="Invalid Key Typed",
                 value=
                 f"Your key typed is invalid. It might be your spelling or that the key is removed.\nAll letters are CAPS LOCKED if any, to help you. (Error TTO-116)"
+            )
+            await ctx.send(embed=em, ephemeral=eph)
+            return
+
+        if key in keys["Users"][str(ctx.author.id)]["Keys"]:
+            em = discord.Embed(color=0xCD87A6) #light red color
+            em.add_field(
+                name="Key Already Redeemed",
+                value=
+                f"You have already redeemed this key."
             )
             await ctx.send(embed=em, ephemeral=eph)
             return
@@ -384,15 +346,6 @@ async def redeem(ctx, key, eph = True):
                     value=
                     f"The key you typed is unavailable. It might have been removed. Contact the developers for any issues. (Error TTO-118)"
                 )
-            await ctx.send(embed=em, ephemeral=eph)
-            return
-            
-        if keys["Users"][str(ctx.author.id)]["Keys"][key] == True:
-            em.add_field(
-                name="Key Already Redeemed",
-                value=
-                f"You have already redeemed this key. (Error TTO-119)"
-            )
             await ctx.send(embed=em, ephemeral=eph)
             return
             
@@ -417,13 +370,13 @@ async def redeem(ctx, key, eph = True):
                         f"YAYYY! You got a key! It's incredible. You recieved {value} coins in your wallet. Enjoy!"
                     )
                 await ctx.send(embed=em, ephemeral=eph)
-                keys["Users"][str(ctx.author.id)]["Keys"][key] = True
+                keys["Users"][str(ctx.author.id)]["Keys"].append(key)
                 
             with open("db/users.json", "w") as f:
-                json.dump(keys, f, indent="\t")
+                json.dump(keys, f)
     except Exception as e:
         await ctx.send('While searching codes, I might have lost the keys to access the code database... (Error TTO-120)')
-        await logging.error(traceback.format_exc())
+        logger.error(traceback.format_exc())
 
 @commands.hybrid_command()
 @discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
@@ -450,8 +403,9 @@ async def daily(ctx, eph = True):
             else:
                 streak = 0
                 users["Users"][str(ctx.author.id)]["Streaks"]["Daily"] = 0
-            daily = random.randrange(750)
-            streakth = streak * 0.5
+            daily = random.randrange(500, 1500)
+            streakth = streak * 0.79
+            streakth = round(streakth, 2)
             
             if streakth == 0:
                 pass
@@ -471,55 +425,24 @@ async def daily(ctx, eph = True):
             else:
                 await ctx.send(f"You'll have to wait {thinkity//3600} hours, {thinkity%3600//60} minutes and {thinkity%60} seconds before being able to collect again your daily bonus.", ephemeral=eph)
         with open('db/users.json', 'w') as f:
-            json.dump(users, f, indent="\t")
+            json.dump(users, f)
     except Exception as e:
         await ctx.send(f"I am sorry but for an unknown reason I can't retrieve something... (Error TTO-121)", ephemeral=eph)
-        await logging.error(traceback.format_exc())
-
-@commands.hybrid_group(name="shop", fallback="view", brief="View the current shop!")
-@discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
-@commands.before_invoke(record)
-async def shop_view(ctx, eph = True):
-    try:
-        em = discord.Embed(color=0x66CAFE)
-        em.add_field(
-            name="Shop",
-            value="We, as in our group coding this project, are sorry to announce the shop still unopened and in works. Would be a pleasure if you could come back later... We are sorry."
-        )
-        await ctx.send(embed=em, ephemeral=eph)
-    except Exception as e:
-        await ctx.send(f"We are sorry {ctx.author.mention}, but an error occured. I've let the host know this. (Error TTO-123)", ephemeral=eph)
-        await logging.error(traceback.format_exc())
-
-@shop_view.command(name="add", brief="Add an item to the shop.")
-@discord.app_commands.describe(eph = "Checks if you want it ephemeral or not. True by default.")
-@commands.before_invoke(record)
-async def shop_add(ctx, eph = True):
-    try:
-        em = discord.Embed(color=0x66CAFE)
-        em.add_field(
-            name="Shop",
-            value="We, as in our group coding this project, are sorry to announce the shop still unopened and in works. Would be a pleasure if you could come back later... We are sorry."
-        )
-        await ctx.send(embed=em, ephemeral=eph)
-    except Exception as e:
-        await ctx.send(f"We are sorry {ctx.author.mention}, but an error occured. I've let the host know this. (Error TTO-123)", ephemeral=eph)
-        await logging.error(traceback.format_exc())
-
-
+        logger.error(traceback.format_exc())
 
 async def setup(bot):
-  bot.add_command(gen)
-  bot.add_command(redeem)
-  bot.add_command(changelog)
-  bot.add_command(beg)
-  bot.add_command(wallet)
-  bot.add_command(rob)
-  bot.add_command(give)
-  bot.add_command(daily)
-  #bot.add_command(gamble)
+    bot.add_command(gen)
+    bot.add_command(redeem)
+    bot.add_command(changelog)
+    bot.add_command(beg)
+    bot.add_command(wallet)
+    bot.add_command(rob)
+    bot.add_command(give)
+    bot.add_command(daily)
+    logger.info("Loaded extension ext.economy")
 
-  bot.add_command(shop_view) # adds the whole shop group
+async def teardown(bot):
+    logger.info("Unloaded extension ext.economy")
   
 if __name__ == "__main__":
     print("Please, do not start an extension as the starting file, they will always be loaded in the bot.\n-Start main.py instead. We will do it for you.\n-Starting main.py from project directory...\n- (This will only work if you enabled indexing in global settings, case of Visual Basic Studio, or if you use a host provider, e.g. Replit.)")

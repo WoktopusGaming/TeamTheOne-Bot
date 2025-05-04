@@ -6,9 +6,9 @@ import traceback
 import filecmp
 import argparse
 
-parser = argparse.ArgumentParser(description="TeamTheBot updater python app.")
-parser.add_argument("--install", action="store_true", dest="install", default=False, help="Switches updater to install mode.")
-parser.add_argument("--upgrade", action="store_true", dest="update", default=False, help="Switches updater to force update mode.")
+parser = argparse.ArgumentParser(description="TeamTheBot updater Python app.")
+parser.add_argument("--install", action="store_true", dest="install", default=False, help="Switches updater to install mode upon invoke of argument.")
+parser.add_argument("--upgrade", action="store_true", dest="update", default=False, help="Switches updater to force update mode upon invoke of argument.")
 args = parser.parse_args()
 
 def get_vnum():
@@ -124,7 +124,7 @@ def check_for_updates(vbranch = "stable"):
         print("Error code TTO-003 - update check failed")
         traceback.format_exc()
         return False
-    
+
 
     
 def get_updates(vbranch = "stable"):
