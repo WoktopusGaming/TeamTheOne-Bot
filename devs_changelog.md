@@ -66,6 +66,7 @@ I don't have any backup or version of these old updates or must check.
 - Main log file `discord.log` now supports `CDEBUG`, a command return separate action log (multi-update change)
 - Some functions (server specific or exclusive to the official bot) were added
   - Some inventory, buffs and wheel functions are official to the bot, yes (due to database structure) even though they ain't added in this version
+- Switched to edited WTFPL license
 
 ### Deprecated
 
@@ -92,7 +93,7 @@ I don't have any backup or version of these old updates or must check.
 
 ### Added
 
-- First official open-sourced release
+- First official open-sourced release (GPL-3.0 license)
 - Keys/codes for in-bot rewards, one time per user, either redeemable by one person only or by everyone until manual removal in `db/users.json` (user and economy database, not in the Github)
 - New command `/redeem`: redeems codes and keys available upon entered
 
