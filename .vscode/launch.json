@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+//        {
+//            "name": "Python Debugger - Devmode Host",
+//            "type": "debugpy",
+//            "request": "launch",
+//            "program": "main.py",
+//            "console": "integratedTerminal",
+//            "args": "--devmode"
+//        },
+// note: wait for VS Code update before retrying -- doesn't work at all + all alternatives attempted
+        {
+            "name": "Python Debugger - Host",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

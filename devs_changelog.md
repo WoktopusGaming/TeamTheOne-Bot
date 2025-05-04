@@ -24,9 +24,9 @@ which may return errors while using a premade parser.*
   - A means Alpha (not INDEV);
   - B means Beta (not INDEV);
   - I means INDEV, regardless of version type;
-- If you look for tags of previous releases in [the specified section](#tags),
+- If you look for tags of previous releases,
 you may not find anything older than v2.1.0i, and for a normal reason:
-I don't have any backup or version of these old updates.
+I don't have any backup or version of these old updates or must check.
 - TAKE NOTE OF THE FOLLOWING:
   - The updater file will recieve more updates post v2.2.0 for optimisation and make it auto-reliable on itself.
   - The startup file is subject to a change soon or later.
@@ -37,28 +37,22 @@ I don't have any backup or version of these old updates.
   Commit timeline doesn't go any further than v2.1 anyways.
   - Disclaimers will soon disappear from changelog to parse more easily. So will most text.
   - The update numbers are *subject to change at any time in the near future.*
-  - There might or might not be an upcoming developer branch
-  for all hosts that automatically checks the GitHub for new commits
-  before starting the bot. If your host is doing that already and
-  that you do not want to receive alpha updates or pre-release ones,
-  please remove that feature from your host.
 
 ## [Unreleased]
-
-This release is INDEV / Alpha; if you put your updater to recieve non-released updates, you will recieve every code change of this unreleased version (current Github version, based on commits given time to time). Documentation will soon cover on this (I need to do it...)
 
 ### Added
 
 - Developer functionality: bot auto-update with `update.py` (adding and changing files only, or for now)
-  - *Note:* updater available v2.1.0i and under to v2.2.0i and higher: check page in documentation (TBA)
+  - *Note:* updater available v2.1.0i and under to v2.2.0i and higher: check page in documentation (TBD)
 - Developer functionality: developer mode (skip any update change or file deletion processes, e.g. `startup.py`, process covered in documentation)
-- Local host / auto run functionality: `update.py` now support command line arguments `--upgrade` and `--install` for outsider processes
+- Local host / auto run functionality: `update.py` now support command line arguments `--upgrade` and `--install` for faster invoking of these processes
+- Local host / auto run functionality: `main.py` now supports command line argument `--devmode` for enabling developer mode faster than database check
 - Host functionality: main.py auto-restart upon missing Internet connection (only on startup)
 - New log file: `fulldiscord.log`: registers all events, even DEBUG, to include Discord module action log
 - New command log level: `CDEBUG`, for command debug objects (only appears in log files to not overload terminal)
-- New database: `alldirs.json`: contains all types of file paths (useful for updates)
+- New database: `alldirs.json`: contains all types of file paths (necessary for updates)
 - New command: `/echo`: the bot says what you want to say (please no random shit in it, I don't have the mood to make a filter for everything in that...)
-- New command group: `/shop`: this will be the future shop command group, which is my last commit for v2.2.0 before I test and make a release (maybe)
+- New command group: `/shop`: this will be the future shop command group. (In works as this commit's date is released.)
 
 ### Changed
 
@@ -67,15 +61,20 @@ This release is INDEV / Alpha; if you put your updater to recieve non-released u
 - Embed colours on Discord: error messages, success messages and info messages now differ
 - Database system: automatically deletes unredeemed keys from separate user data (database cleanup system)
   - Only useful if host used v2.1.0i or older systems
-- Economy extension: removed any usage of the TeamTheOne coins wallet
 - `/ban`: Tries to message banned user before ban, now responds in embeds in same channel (Dyno-alike concept)
   - Can be improved further in the future
 - Main log file `discord.log` now supports `CDEBUG`, a command return separate action log (multi-update change)
+- Some functions (server specific or exclusive to the official bot) were added
+  - Some inventory, buffs and wheel functions are official to the bot, yes (due to database structure) even though they ain't added in this version
 
 ### Deprecated
 
-- All updates before v2.0.0i will be removed later for irrelevance with the current bot. (I am breaking the bot's history, yes.)
-- Updater: auto-updating the updater will be deprecated from main.py as updater will auto-update itself before all-dirs.
+- All updates before v2.0.0i in the updatelog will be removed later for irrelevance with the current bot (I am breaking the bot's history, yes)
+- Updater: auto-updating the updater will be deprecated from main.py as updater will auto-update itself before all-dirs
+  - (Only applies for all users who have used the Beta v2.2i version of the bot; if not used, this doesn't apply to you)
+  - This is a possible deprecation; it might not happen at all
+- Changelogs: This Markdown file will soon be required to be on all directories due to parsing (I am replacing updatelog.json)
+- ***All version numbers are deprecated and soon to be replaced - this might require a manual reinstall of the updatelog (I'll try to not require it)***
 
 ### Removed
 
@@ -116,7 +115,7 @@ This release is INDEV / Alpha; if you put your updater to recieve non-released u
 - `ExtensionAlreadyLoaded unexistant`: Directory-specific fix, no longer returns this error upon startup on official bot localhost
 - Command `/daily` usage: showed elapsed time between last daily and now instead of remaining time
 
-## [2.0.0i] - 2023-05-16
+## 2.0.0i - 2023-05-16
 
 ### Added
 
@@ -145,38 +144,38 @@ This release is INDEV / Alpha; if you put your updater to recieve non-released u
 - Economy system: Database "unregistered" errors were removed
 - Database: Inventory and wallets no longer automatically reset
 
-## [1.1.3i] - 2023-03-12
+## 1.1.3i - 2023-03-12
 
 ### Added
 
 - New command `/gamble`: economy extension command, roll your chance to try and get high
 
-## [1.1.2i] - 2023-02-28
+## 1.1.2i - 2023-02-28
 
 ### Changed
 
 - Command `/help` functionality: embedded help page and made command hybrid (dynamic slash command and text-line `$` command)
 
-## [1.1.1i] - 2023-02-28
+## 1.1.1i - 2023-02-28
 
 ### Added
 
 - New command `/give`: economy extension command, can give money to someone else from multiserver wallet
 
-## [1.1.0i] - 2023-02-27
+## 1.1.0i - 2023-02-27
 
 ### Added
 
 - Error recording for easy report and fix
 - ~~20 minutes max uptime without inputs~~ (Replit-hosting update, doesn't apply)
 
-## [1.0.4i] - 2023-01-25
+## 1.0.4i - 2023-01-25
 
 ### Added
 
 - Error message for `Missing Permissions`: ADMIN commands in DMs and as users
 
-## [1.0.3i] - 2023-01-25
+## 1.0.3i - 2023-01-25
 
 ### Changed
 
@@ -186,7 +185,7 @@ This release is INDEV / Alpha; if you put your updater to recieve non-released u
 
 - Command `/rob` usage: fixed "couldn't rob" situation
 
-## [1.0.2i] - 2023-01-22
+## 1.0.2i - 2023-01-22
 
 ### Changed
 
@@ -196,7 +195,7 @@ This release is INDEV / Alpha; if you put your updater to recieve non-released u
 
 - Command `/rob` usage: fixed "couldn't rob" situation
 
-## [1.0.1i] - 2023-01-22
+## 1.0.1i - 2023-01-22
 
 ### Added
 
@@ -206,7 +205,7 @@ This release is INDEV / Alpha; if you put your updater to recieve non-released u
 
 - Extension reload (`/reload`) improvement: easy reloading through Discord
 
-## [1.0.0i] - 2023-01-22
+## 1.0.0i - 2023-01-22
 
 ### Added
 
@@ -216,9 +215,9 @@ This release is INDEV / Alpha; if you put your updater to recieve non-released u
 
 - Command organisation and bot improvement (made extensions for easy reloading)
 
-## [0.1.0i] - 2022-09-16
+## 0.1.0i - 2022-09-16
 
-First version on the bot, based on the Discord.py official documentation.
+First version on the bot, based on the Discord.py official documentation (Replit's auto configuration)
 
 [UNRELEASED]: https://github.com/WoktopusGaming/TeamTheOne-Bot/compare/v2.1.0i...HEAD
 [2.1.0i]: https://github.com/WoktopusGaming/TeamTheOne-Bot/releases/tag/v2.1.0i

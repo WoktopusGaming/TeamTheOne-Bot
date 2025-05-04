@@ -151,18 +151,33 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+#
+# Separation with the initial python gitignore file
+#
+
 # TTO app files
 *.log
 .token
+
+# TTO official-only extensions
+#   "This is restriction!" of course not. This directory contains some extensions for
+#   servers in particular. This doesn't restrict everyone from it, but it is restricted
+#   to a unique single server. For events, specific other stuff or stuff related
+#   to that server only. Hence, it isn't compatible with the rest of the bot and should
+#   not be found on any distribution package from the bot to prevent errors. 
+ext/server
+
+# TTO backup logs
+*.1
+*.2
+*.3
+*.4
+*.5
 
 # TTO databases
 db/*
 !db/updatelog.json
 !db/alldirs.json
 
-# Todo list
-todo.md
-
-# Visual Basic Studio files
+# Visual Studio files
 .vs/
-.vscode/
