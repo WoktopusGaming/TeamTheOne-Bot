@@ -12,9 +12,6 @@ mainparser = argparse.ArgumentParser(description="TeamTheBot main Python app.")
 mainparser.add_argument("--devmode", action="store_true", dest="devparse", default=False, help="Enables developer mode without database checks.")
 args = mainparser.parse_args()
 
-if args.devparse:
-    print("Valid.")
-
 import aiohttp
 import asyncio
 import discord
