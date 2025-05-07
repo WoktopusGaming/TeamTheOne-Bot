@@ -188,9 +188,9 @@ async def give(ctx, amt:int, mem:Member):
 
 @commands.hybrid_command(brief="Check how many money you have.")
 @commands.before_invoke(record)
-async def wallet(ctx, member:Member = commands.parameter(default=lambda ctx: ctx.author)):
+async def wallet(ctx, member:Member = None):
     try:
-        mem = member or ctx.author     
+        mem = member or ctx.author
         await open_account(mem)
 
         user = mem

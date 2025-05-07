@@ -189,15 +189,8 @@ if updateoop != 1 and devmode == 0:
             
 
 #end separation
-#class UnfilteredBot - discord.bot invoke
 
-class UnfilteredBot(commands.Bot):
-    """An overridden version of the Bot class that will listen to other bots and work 24/7."""
-    async def process_commands(self, message):
-        """Override process_commands to listen to bots if ctx.author.bot condition is used."""
-        ctx = await self.get_context(message)
-        await self.invoke(ctx)
-
+class UnfilteredBot(commands.Bot): pass
 
 #menu = AppMenu(timeout=60, ephemeral=True)
 bot = UnfilteredBot(command_prefix="$", intents=discord.Intents.all(), loop=asyncio.new_event_loop())
@@ -366,7 +359,7 @@ async def unload(ctx, ext):
 
 @bot.hybrid_command()
 @commands.is_owner()
-async def reload(ctx, ext, id = 0):
+async def reload(ctx, ext, id: discord.Guild = None):
     try:
         if ext == "all":
             alldirs = json.load(open("db/alldirs.json"))
@@ -382,7 +375,7 @@ async def reload(ctx, ext, id = 0):
                 value=f"We successfully reloaded all extensions!"
             )
 
-            if id == 0:
+            if id == None:
                 await bot.tree.sync()
             else:
                 try:
@@ -429,14 +422,14 @@ async def reload(ctx, ext, id = 0):
 # To do: add channel as option
 @bot.hybrid_command()
 @commands.guild_only()
-async def echo(ctx, message):
+async def echo(ctx, message, channel: discord.TextChannel = None):
     try:
-        echo = bot.get_channel(ctx.channel.id)
+        echo = bot.get_channel(channel.id) or bot.get_channel(ctx.channel.id)
         await echo.send(message)
 
         # modified @commands.before_invoke(record) specially for echos
         with open("discord.com.log", "a") as f:
-            if len(message) >= 350:
+            if len(message) >= 50:
                 f.write(f"{ctx.author} used /{ctx.command} at \"{ctx.message.created_at}\":\n-------------\n{message}\n-------------\n")
             else:
                 f.write(f"{ctx.author} used /{ctx.command} at \"{ctx.message.created_at}\": \"{message}\"\n")
