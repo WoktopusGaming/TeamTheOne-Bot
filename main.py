@@ -186,7 +186,7 @@ if updateoop != 1 and devmode == 0:
     elif upd == None:
         devmode = 1
         pass
-            
+
 
 #end separation
 
@@ -513,31 +513,33 @@ async def main():
     async with bot:
         await bot.start(a)
 
-while True:
-    try:
-        try: 
-            loop = asyncio.get_running_loop()
-        except RuntimeError:
-            loop = None
+try:
+    try: 
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
 
-        if loop and loop.is_running():
-            tsk = loop.create_task(main())
-            tsk.add_done_callback(lambda t: print(f'Task done with result={t.result()}  << return val of main()'))
-        else:
-            result = asyncio.run(main())
-    except discord.HTTPException as e:
-        if e.status == 429:
-            logger.warning("The Discord servers denied the connection for making too many requests - Error 429")
-        else:
-            logger.warning(f"HTTP error {e} was raised. Correct immediately or contact developer.")
-    except Exception as e:
-        if type(e) == aiohttp.client_exceptions.ClientConnectorError:
-            logger.warning(f"WHOOPS! Seems you're offline! Checking again in 5 seconds. (Error TTO-005)")
-            time.sleep(5)
-            logger.info(f"Restarting main process...")
-            os.system('main.py')
-        else:
-            logger.warning(f"Error \"{e}\" (\"{type(e)}\") was raised. Please correct it ASAP. (Error TTO-000)")
-            logger.warning(traceback.format_exc())
-            time.sleep(5)
-            raise e
+    if loop and loop.is_running():
+        tsk = loop.create_task(main())
+        tsk.add_done_callback(lambda t: print(f'Task done with result={t.result()}  << return val of main()'))
+    else:
+        asyncio.run(main())
+except discord.HTTPException as e:
+    if e.status == 429:
+        logger.warning("The Discord servers denied the connection for making too many requests - Error 429")
+    else:
+        logger.warning(f"HTTP error {e} was raised. Correct immediately or contact developer.")
+except KeyboardInterrupt:
+    logger.info("Main task was interrupted. Program will close within the next few seconds.")
+    quit()
+except Exception as e:
+    if type(e) == aiohttp.client_exceptions.ClientConnectorError:
+        logger.warning(f"WHOOPS! Seems you're offline! Checking again in 5 seconds. (Error TTO-005)")
+        time.sleep(5)
+        logger.info(f"Restarting main process...")
+        os.system('main.py')
+    else:
+        logger.warning(f"Error \"{e}\" (\"{type(e)}\") was raised. Please correct it ASAP. (Error TTO-000)")
+        logger.warning(traceback.format_exc())
+        time.sleep(5)
+        raise e

@@ -16,7 +16,7 @@ def check_socket(host, port):
             return 1
   except Exception as e:
     print("Socket couldn't be checked. (Error TTO-009)")
-    traceback.format_exc(e)
+    traceback.format_exc()
     return 0
 
 #app definition
