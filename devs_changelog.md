@@ -18,7 +18,7 @@ Hope all of that won't get you lost, though.*
 Some lines may include workarounds only on the official side of the bot before its localhosting period,
 which started on May 2023 by previous host backup, and before its open-sourcing on July 2023.
 - *The whole bot is still in development - in alpha precisely - and may have a lot of changes to come.*
-- ***DO NOT TRY TO PARSE THIS FILE UNLESS YOU'RE SURE**:
+- ***DO NOT TRY TO PARSE THIS FILE UNLESS YOU'RE SURE***:
 the file has one or more versions portrayed by the lowercase letter I after it's version.
 Those are versions made during the INDEV phase of the bot, when it was hosted on repl.it.
 Newer versions will be accounted without the lowercase letter.

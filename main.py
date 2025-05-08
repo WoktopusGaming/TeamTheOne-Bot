@@ -419,7 +419,6 @@ async def reload(ctx, ext, id: discord.Guild = None):
         logger.error(traceback.format_exc())
 
 
-# To do: add channel as option
 @bot.hybrid_command()
 @commands.guild_only()
 async def echo(ctx, message, channel: discord.TextChannel = None):
@@ -429,7 +428,7 @@ async def echo(ctx, message, channel: discord.TextChannel = None):
 
         # modified @commands.before_invoke(record) specially for echos
         with open("discord.com.log", "a") as f:
-            if len(message) >= 50:
+            if len(message) >= 75:
                 f.write(f"{ctx.author} used /{ctx.command} at \"{ctx.message.created_at}\":\n-------------\n{message}\n-------------\n")
             else:
                 f.write(f"{ctx.author} used /{ctx.command} at \"{ctx.message.created_at}\": \"{message}\"\n")
@@ -528,13 +527,9 @@ while True:
             result = asyncio.run(main())
     except discord.HTTPException as e:
         if e.status == 429:
-            logger.warning(
-                "The Discord servers denied the connection for making too many requests -/- Error 429"
-            ) 
-            # os.system('restart.py')
-            # os.system('kill 1')
+            logger.warning("The Discord servers denied the connection for making too many requests - Error 429")
         else:
-            logger.warning(f"HTTP error {e} was raised. Please correct it ASAP.")
+            logger.warning(f"HTTP error {e} was raised. Correct immediately or contact developer.")
     except Exception as e:
         if type(e) == aiohttp.client_exceptions.ClientConnectorError:
             logger.warning(f"WHOOPS! Seems you're offline! Checking again in 5 seconds. (Error TTO-005)")
@@ -543,6 +538,6 @@ while True:
             os.system('main.py')
         else:
             logger.warning(f"Error \"{e}\" (\"{type(e)}\") was raised. Please correct it ASAP. (Error TTO-000)")
-            logger.warning(traceback.format_exc(e))
+            logger.warning(traceback.format_exc())
             time.sleep(5)
             raise e
