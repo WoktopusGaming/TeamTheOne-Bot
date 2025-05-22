@@ -145,7 +145,7 @@ async def changelog(ctx, cpage = 0, eph = True):
                 else:
                     versions += f"- {changelog['Changelogs'][str(i)]['Compact Version']} / {changelog['Changelogs'][str(i)]['Second Version Number']}\n"
                     versionnames += f'- {changelog["Changelogs"][str(i)]["Version Name"]}\n'
-                    changelognumbers += f"- Changelog #**{changelog['Changelogs'][str(i)]['Number']}**\n"
+                    changelognumbers += f"- Changelog #**{i}**\n"
                 
             em.add_field(name="All changelogs versions", value=versions)
             em.add_field(name="All changelogs names", value=versionnames)

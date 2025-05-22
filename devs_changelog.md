@@ -159,6 +159,10 @@ All changes written under are changes made in comparison to older versions.
 
 - New command `/gamble`: economy extension command, roll your chance to try and get high
 
+### Removed
+
+- Embedded `/help` command: it is now only hybrid
+
 ## 1.1.2i - 2023-02-28
 
 ### Changed
