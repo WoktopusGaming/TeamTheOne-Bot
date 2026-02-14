@@ -1,28 +1,8 @@
 # Python cache
 __pycache__/
 
-# TTO run files
-*.log
+# TTO token (still for safety)
 .token
 
-# TTO backup logs
-*.1
-*.2
-*.3
-*.4
-*.5
-
-# TTO databases
-db/*
-!db/updatelog.json
-!db/alldirs.json
-
-# Server specific extensions
-ext/servers.py
-
-# Official indexation files
-#static/
-#templates/
-
-# Visual Studio files
-.vs/
+# TTO command log (privacy reasons?)
+oldlogs/discord.com.log

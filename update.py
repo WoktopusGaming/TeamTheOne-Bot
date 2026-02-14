@@ -12,7 +12,7 @@ parser.add_argument("--upgrade", action="store_true", dest="update", default=Fal
 args = parser.parse_args()
 
 def get_vnum():
-    return 1.04
+    return 2
 
 def download_update(default_url, fail_url, tempfilename, filename):
     print(f"Downloading file from repository...")
@@ -177,14 +177,14 @@ if __name__ == "__main__":
     if args.install:
         print("Starting installation. Please do not exit the program whilst it is running.")
         try: get_updates()
-        except Exception as e: traceback.format_exc(e); print("The program will quit. If it's an issue you may not know, please contact the developer."); quit()
+        except Exception as e: traceback.format_exc(); print("The program will quit. If it's an issue you may not know, please contact the developer."); quit()
         print("Installation is complete. You can run main.py now."); quit()
     elif args.update:
         print("Starting updating. Please do not exit the program whilst it is running.")
         try:
             upd = check_for_updates()
             if upd == True: get_updates()
-        except Exception as e: traceback.format_exc(e); print("\n\n\nThe program will quit. If it's an issue you may not know, please contact the developer."); quit()
+        except Exception as e: traceback.format_exc(); print("\n\n\nThe program will quit. If it's an issue you may not know, please contact the developer."); quit()
         print("Update is complete."); quit()
     else:
         print("Please, do not start update.py as the starting file.\nStart main.py instead. We will do it for you.\nStarting main.py...")

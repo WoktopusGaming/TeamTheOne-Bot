@@ -6,6 +6,9 @@
 # I removed comments at the end of each single line, I'm sorry
 # - WoktopusGaming, aka Etchy / Echazarel
 
+# Side note: I have to readd them or else I'm pretty fucked if I
+# ever redo everything with it.
+
 import argparse
 
 mainparser = argparse.ArgumentParser(description="TeamTheBot main Python app.")
@@ -25,6 +28,8 @@ import traceback
 
 import logging.handlers
 import urllib.request
+
+from typing import NamedTuple, Literal
 
 from discord import Member
 from discord.ext import commands
@@ -95,8 +100,22 @@ logger.addHandler(handles)
 
 # version section
 
-def get_vnum():
-    return 0.1107
+target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/updatelog.json"
+changelogreq = urllib.request.urlopen(target_url)
+with open("db/updatelog.json", "r") as f:
+    ver = json.load(f)
+
+__version__ = "0.1.0a"
+
+class vinfo(NamedTuple):
+    major: int
+    minor: int
+    patch: int
+    rlevel: Literal["alpha", "beta", "candidate", "final"]
+    revision: int
+
+vnum: vinfo = vinfo(major=0, minor=1, patch=0, rlevel="alpha", revision=0)
+vverif: vinfo = vinfo(ver["stable-maj"], ver["stable-min"], ver["stable-pat"], ver["stable-rlevel"], ver["stable-rev"])
 
 def get_vbranch():
     return "unreleased"
@@ -131,15 +150,11 @@ elif updateoop == 1:
 
 target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/update.py"
 data = urllib.request.urlopen(target_url)
-target_url = "https://raw.githubusercontent.com/WoktopusGaming/TeamTheOne-Bot/master/db/updatelog.json"
-changelogreq = urllib.request.urlopen(target_url)
-changelog = json.load(changelogreq)
 
-main_version = get_vnum()
 main_branch = get_vbranch()
 update_version = update.get_vnum()
 
-if update_version < changelog["stable-updpy"]:
+if update_version < ver["ver-updpy"] and devmode == 0:
     with open("temp.update.py", "w") as f:
         for line in data:
             f.write(line.decode("utf-8"))
@@ -166,8 +181,8 @@ if updateoop != 1 and devmode == 0:
         logger.info("No update was found.")
         pass
     elif upd == True:
-        if main_branch == "unreleased":
-                logger.info("An update was found for the unreleased version. Installing update...")
+        if main_branch != "stable":
+                logger.info("An update was found for an unreleased version. Installing update...")
                 logger.warning(f"WARNING: Non-release versions are unstable, and any change will be installed and will overwrite any current file! It is recommended you use a stable version instead! Ignore if you are aware of the consequences this could give with your clients. If you do not want this to be shown again because you accept, you can add a # at the start of lines 154 and 155 in main.py, needing to be readded every time the update happens. If you are fine with overwriting any file, press any letter then Enter. If you are not, please type \"exit\" then Enter. Thank you for your understanding.")
                 upd_exit = input()
                 try:
@@ -180,7 +195,7 @@ if updateoop != 1 and devmode == 0:
                     logger.info("Skipping unreleased version update warning.")
                     update.get_updates("unreleased")
         else:
-            if main_version < changelog["stable-latest-number"]:
+            if vnum < vverif:
                 logger.info("An update was found for the stable release. Installing update...")
                 update.get_updates()
     elif upd == None:
@@ -190,10 +205,10 @@ if updateoop != 1 and devmode == 0:
 
 #end separation
 
-class UnfilteredBot(commands.Bot): pass
+class TTOBot(commands.Bot): pass
 
 #menu = AppMenu(timeout=60, ephemeral=True)
-bot = UnfilteredBot(command_prefix="$", intents=discord.Intents.all(), loop=asyncio.new_event_loop())
+bot = TTOBot(command_prefix="$", intents=discord.Intents.all(), loop=asyncio.new_event_loop())
                     #help_command=PrettyHelp(color=discord.Colour.green(),
                                              #menu=menu))
 
@@ -359,7 +374,7 @@ async def unload(ctx, ext):
 
 @bot.hybrid_command()
 @commands.is_owner()
-async def reload(ctx, ext, id: discord.Guild = None):
+async def reload(ctx, ext, id: discord.Guild = None, treesync = False):
     try:
         if ext == "all":
             alldirs = json.load(open("db/alldirs.json"))
@@ -375,9 +390,9 @@ async def reload(ctx, ext, id: discord.Guild = None):
                 value=f"We successfully reloaded all extensions!"
             )
 
-            if id == None:
+            if id == None and treesync == True:
                 await bot.tree.sync()
-            else:
+            elif treesync == True:
                 try:
                     await bot.tree.sync(guild=discord.Object(id=id))
                 except Exception:
@@ -398,9 +413,9 @@ async def reload(ctx, ext, id: discord.Guild = None):
             value=f'We reloaded this extension successfully: \"{ext}\".'
         )
 
-        if id == 0:
+        if id == 0 and treesync == True:
             await bot.tree.sync()
-        else:
+        elif treesync == True:
             try: 
                 await bot.tree.sync(guild=discord.Object(id=id))
             except Exception as e: 

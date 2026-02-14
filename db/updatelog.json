@@ -1,97 +1,83 @@
 {
 	"changelog-separpt": 6,
-	"stable-updpy": 1.04,
-	"stable-updpy-userversion": "v1.0.3",
-	"stable-latest-number": 0.11,
-	"stable-latest-version-num": "INDEV v2.1.0",
-	"stable-latest-version-com": "v2023.07.07",
-	"unreleased-latest-number": 0.1107,
-	"unreleased-latest-version-num": "INDEV v2.2.0",
-	"unreleased-latest-version-com": "v2025.??.??",
+	"ver-updpy": 2,
+	"stable-maj": 0,
+	"stable-min": 1,
+	"stable-pat": 0,
+	"stable-rlevel": "alpha",
+	"stable-rev": 0,
 	"Changelogs": {
 		"1": {
 			"Detailed Changelog": "- New command /clocktimer (timer)\n- Improvement of the bot (made extensions for easy reloading)",
-			"Compact Version": "v2023.01.22-1",
+			"Dated Version": "v2023.01.22-1",
 			"Version Name": "Extensions Update",
-			"Second Version Number": "INDEV v1.0.0",
-			"Number": 0.01
+			"Version Number": "INDEV v1.0.0"
 		},
 		"2": {
 			"Detailed Changelog": "- New command /rob (rob your opponents)\n- Improvement of the /reload command (reload easily the extensions)",
-			"Compact Version": "v2023.01.22-2",
+			"Dated Version": "v2023.01.22-2",
 			"Version Name": "Robbery Update",
-			"Second Version Number": "INDEV v1.0.1",
-			"Number": 0.02
+			"Version Number": "INDEV v1.0.1"
 		},
 		"3": {
 			"Detailed Changelog": "- Command /clocktimer expanded to 7 days (604799 seconds)\n- Economy /rob command bug fixed (not able to rob)",
-			"Compact Version": "v2023.01.22-3",
+			"Dated Version": "v2023.01.22-3",
 			"Version Name": "Mini Fixing Update",
-			"Second Version Number": "INDEV v1.0.2",
-			"Number": 0.03
+			"Version Number": "INDEV v1.0.2"
 		},
 		"4": {
 			"Detailed Changelog": "- Command /rob fixed and now robs\n- /clocktimer got fixed for inputing 7d (604800s)",
-			"Compact Version": "v2023.01.25-1",
+			"Dated Version": "v2023.01.25-1",
 			"Version Name": "Mini Fixing Update",
-			"Second Version Number": "INDEV v1.0.3",
-			"Number": 0.04
+			"Version Number": "INDEV v1.0.3"
 		},
 		"5": {
 			"Detailed Changelog": "- Message was added for error Missing Permissions To Run Command (mostly in DMs using ADMIN commands)",
-			"Compact Version": "v2023.01.25-2",
+			"Dated Version": "v2023.01.25-2",
 			"Version Name": "Message Log",
-			"Second Version Number": "INDEV v1.0.4",
-			"Number": 0.05
+			"Version Number": "INDEV v1.0.4"
 		},
 		"6": {
 			"Detailed Changelog": "- Bot records any error happening and makes a report\n- Bot works now up to 20 mins AFK without any input",
-			"Compact Version": "v2023.02.27",
+			"Dated Version": "v2023.02.27",
 			"Version Name": "Bot Capacity Update",
-			"Second Version Number": "INDEV v1.1.0",
-			"Number": 0.06
+			"Version Number": "INDEV v1.1.0"
 		},
 		"7": {
 			"Detailed Changelog": "- /give command is finally here (give money freely to someone)",
-			"Compact Version": "v2023.02.28-1",
+			"Dated Version": "v2023.02.28-1",
 			"Version Name": "Giving Update",
-			"Second Version Number": "INDEV v1.1.1",
-			"Number": 0.07
+			"Version Number": "INDEV v1.1.1"
 		},
 		"8": {
 			"Detailed Changelog": "- Made help command a hybrid command and embedded the help page",
-			"Compact Version": "v2023.02.28-2",
+			"Dated Version": "v2023.02.28-2",
 			"Version Name": "Slashing Help Update",
-			"Second Version Number": "INDEV v1.1.2",
-			"Number": 0.08
+			"Version Number": "INDEV v1.1.2"
 		},
 		"9": {
 			"Detailed Changelog": "- </gamble:1084153211029565520> command is here",
-			"Compact Version": "v2023.03.12",
+			"Dated Version": "v2023.03.12",
 			"Version Name": "Gamble Update",
-			"Second Version Number": "INDEV v1.1.3",
-			"Number": 0.09
+			"Version Number": "INDEV v1.1.3"
 		},
 		"10": {
 			"Detailed Changelog": "- </changelog:1097887315948470382> now lists all changelogs registered\n- </gamble:1084153211029565520> is now available for a limited time\n- </shop view:1096607299746926704> is available, but not open yet\n- </clocktimer:0> is no more available\n- Inventory is available for everyone, as a revamp of the whole database\n- Commands no longer throw at you an error saying you didn't register to the database\n- The database no more resets your inventory and your bank\n- You can now register for Partner System Tier 1 for free",
-			"Compact Version": "v2023.05.16",
+			"Dated Version": "v2023.05.16",
 			"Version Name": "Bot Revamp Update",
-			"Second Version Number": "INDEV v2.0.0",
-			"Number": 0.10
+			"Version Number": "v0.0.0"
 		},
 		"11": {
 			"Detailed Changelog": "- </changelog:1097887315948470382>'s cpage is no longer necessary and will default to zero\n- </gamble:1084153211029565520> is no longer available\n- Added keys to user database\n- Fixed problem where the database registers \"#0\" because of new names\n- Fixed problem where the bot would return ExtensionAlreadyLoaded is unexistant\n- Fixed problem where daily shown time elapsed between last daily and now instead of time remaining\n- </redeem:1126970259878981794> is now finished, codes are available\n- Codes are redeemable once only per user\n- Codes can now be either redeemed by one person (first redeemed first served) or by anyone until removal",
-			"Compact Version": "v2023.07.07",
+			"Dated Version": "v2023.07.07",
 			"Version Name": "Commands Revamp Update",
-			"Second Version Number": "INDEV v2.1.0",
-			"Number": 0.11
+			"Version Number": "v0.1.0"
 		},
 		"12": {
-			"Detailed Changelog": "Hello! This update is an unreleased update! If you see this, immediately install a stable release package or ask the owner to do so! Unless you or they know what you or they are doing.",
-			"Compact Version": "v2025.??.??",
-			"Version Name": "UNRELEASED UPDATE",
-			"Second Version Number": "INDEV v2.2.0",
-			"Number": 0.12
+			"Detailed Changelog": "Hello! This is not a changelog! Indeed, v0.1.1 and onwards will not have an available changelog using the current system.\n We advise you to read [this](https://github.com/WoktopusGaming/TeamTheOne-Bot/blob/master/devs_changelog.md) instead for all versions. Thank you!",
+			"Dated Version": "v2025.??.??",
+			"Version Name": "Shop Update",
+			"Version Number": "v0.1.1"
 		}
 	}
 }
